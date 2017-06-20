@@ -1,0 +1,1 @@
+Skripte zur automatisierten Webarchivierung mithilfe von `wget`.
