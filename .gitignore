@@ -11,6 +11,7 @@ pyvenv.cfg
 *.log
 *.db
 *.warc.gz
+*.cdx
 www*/
 
 *.csv
