@@ -16,5 +16,6 @@ pyvenv.cfg
 www*/
 
 *.csv
+!example.csv
 
 .vscode/*
