@@ -6,7 +6,6 @@ from datetime import datetime, time
 from pathlib import Path
 import shutil
 import subprocess
-from tempfile import NamedTemporaryFile
 import time as waittime
 
 # Define global variables realted to the CSV.
@@ -40,28 +39,6 @@ def check_sqlite():
     else:
         return False
         #print("check_sqlite set False")
-
-def append_csv():
-    """Append the CSV file with current status."""
-    temp_csv = NamedTemporaryFile(mode='w')
-
-    with temp_csv:
-        writestatus = csv.writer(temp_csv, delimiter=CSV_DELIMITER)
-        download_status = True
-        
-        if download_status is True:
-            writestatus.writerow({'done'})
-            print("download_status", download_status)
-
-        elif download_status is False:
-            print("download_status", download_status)
-
-        else:
-            print(
-                "An error occured while trying to append status to",
-                WARC_LIST,
-                "."
-                )
 
 def archive_websites():
     """Archive websites from a csv"""
