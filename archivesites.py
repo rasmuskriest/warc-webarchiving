@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
 import csv
 from datetime import datetime, time
@@ -95,8 +96,3 @@ def archive_websites():
             else:
                 print("Cannot download right now.")
                 quit()
-
-if __name__ == "__main__":
-    archive_websites()
-    #check_time()
-    #append_csv()
