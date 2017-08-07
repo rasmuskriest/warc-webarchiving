@@ -4,7 +4,6 @@
 import csv
 from datetime import datetime, time
 from pathlib import Path
-import shutil
 import subprocess
 import time as waittime
 
