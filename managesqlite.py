@@ -3,9 +3,6 @@
 
 import sqlite3
 
-def check_sqlite():
-    """Check for SQLite database."""
-
 def create_sqlite():
     """Create SQLite database."""
 

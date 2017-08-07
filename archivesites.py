@@ -3,6 +3,7 @@
 
 import csv
 from datetime import datetime, time
+from pathlib import Path
 import shutil
 import subprocess
 from tempfile import NamedTemporaryFile
@@ -28,6 +29,17 @@ def check_time():
     else:
         return False
         #Print("check_time set False")
+
+def check_sqlite():
+    """Check for SQLite database."""
+    dbfile = Path("sitedb.sqlite")
+    if dbfile.is_file():
+        return True
+        #print("check_sqlite set True")
+        
+    else:
+        return False
+        #print("check_sqlite set False")
 
 def append_csv():
     """Append the CSV file with current status."""
