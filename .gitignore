@@ -8,6 +8,7 @@ pip-selfcheck.json
 pyvenv.cfg
 .Python
 .DS_Store
+*.pyc
 
 *.log
 *.db
@@ -18,5 +19,6 @@ www*/
 
 *.csv
 !example.csv
+*.sqlite
 
 .vscode/*
