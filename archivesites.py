@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import csv
 from datetime import datetime, time
+from pathlib import Path
 import subprocess
-import sqlite3
 import time as waittime
 
-import managesqlite
+# Define global variables realted to the CSV.
+WARC_LIST = './example.csv'
+CSV_DELIMITER = ','
 
 def check_time():
     """Check whether websites should be archived."""
@@ -25,11 +28,20 @@ def check_time():
         return False
         #Print("check_time set False")
 
-def archive_websites(downloaddir, csvfile, dbname):
+def check_sqlite():
+    """Check for SQLite database."""
+    dbfile = Path("sitedb.sqlite")
+    if dbfile.is_file():
+        return True
+        #print("check_sqlite set True")
+        
+    else:
+        return False
+        #print("check_sqlite set False")
+
+def archive_websites():
     """Archive websites from a csv"""
     download_time = check_time()
-
-
 
     with open(WARC_LIST, 'r') as readfile:
         readsite = csv.DictReader(readfile, delimiter=CSV_DELIMITER)
