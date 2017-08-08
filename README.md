@@ -13,7 +13,8 @@ python wget-warc.py run
 Für einen manuellen Im- oder Export zwischen CSV-Liste und SQLite-Datenbank 
 
 ```
-notevault enable folder
+python wget-warc.py import
+python wget-warc.py export
 ```
 
 Der Befehl `-h` zeigt alle Optionen auf:
