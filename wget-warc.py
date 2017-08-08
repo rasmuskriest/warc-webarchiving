@@ -26,7 +26,7 @@ def cli():
         '-c', '--config',
         action='store_true',
         help='custom path to user config file',
-        default=(getcwd(), "default.conf"))
+        default=(getcwd(), 'default.conf'))
 
     args = parser.parse_args()
 
@@ -35,22 +35,22 @@ def cli():
     conf.read(args.config)
     downloaddir = conf['downloaddir']
     csvfile = conf['csvfile']
-    dbfilename = conf['dbfilename']
+    dbname = conf['dbname']
 
     # Parse arguments and run accordingly.
-    if args.mode == "run":
+    if args.mode == 'run':
         try:
-            archivesites.archive_websites(downloaddir, csvfile, dbfilename)
+            archivesites.archive_websites(downloaddir, csvfile, dbname)
         except Exception, e:
             print(str(e))
-    elif args.mode == "import":
+    elif args.mode == 'import':
         try:
-            managesqlite.import_csv(csvfile, dbfilename)
+            managesqlite.import_csv(csvfile, dbname)
         except Exception, e:
             print(str(e))
-    elif args.mode == "export":
+    elif args.mode == 'export':
         try:
-            managesqlite.export_csv(csvfile, dbfilename)
+            managesqlite.export_csv(csvfile, dbname)
         except Exception, e:
             print(str(e))
     else:
