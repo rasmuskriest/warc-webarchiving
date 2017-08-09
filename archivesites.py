@@ -4,7 +4,6 @@
 from datetime import datetime, time
 import subprocess
 import sqlite3
-import time as waittime
 
 import managesqlite
 
@@ -25,48 +24,33 @@ def check_time():
         return False
         #Print("check_time set False")
 
-def archive_websites(downloaddir, csvfile, dbname):
+def archive_websites(download_dir, csv_file, db_name, database, table_name):
     """Archive websites from a csv"""
+    #sqlite_exists = managesqlite.check_sqlite(db_name, database)
+    sqlite_exists = True #TODO: Check for database and act accordingly.
     download_time = check_time()
+    column_url = 'Url'
+    column_state = 'State'
 
-    with open(WARC_LIST, 'r') as readfile:
-        readsite = csv.DictReader(readfile, delimiter=CSV_DELIMITER)
+    if sqlite_exists: 
+        conn = sqlite3.connect(database)
+        curs = conn.cursor()
+  
+        # Check for possible download time.
+        if download_time is True:
+            #print("It is time to download!")              
+            # Select URL in rows that are not done
+            curs.execute('SELECT ({coi}) FROM {tn} WHERE {cn}=""'.\
+            format(coi=column_url, tn=table_name, cn=column_state))
+            for row in curs:
+                #print(curs)
+                for elem in row:
+                    print("Downloading", elem)
+                    subprocess.run(['./wget.sh', elem])
+                    print(elem, "successfully downloaded.")
+                #TODO: Second cursor for writing stuff
 
-        for row in readsite:
-            #waittime.sleep(5)
-            
-            # Check for possible download time.
-            if download_time is True:
-                print("It is time to download!")
-                
-                # Check whether site has not been downloaded.
-                if row['State'] == "":
-                    print("Downloading", row['Organization'], "|", row['URL'])
-                    subprocess.run(['./wget-warc.sh', row['URL']])
-                    print(row['Organization'], "|", row['URL'], "successfully downloaded.")
-                    download_status = True
-                    #append_csv(download_status)
-                
-                # Skip to next row if site has been downloaded.
-                elif row['State'] == "done":
-                    print(row['Organization'], "|", row['URL'], "is already downloaded.")
-                    download_status = False
-                    #append_csv(download_status)
-                    next(readsite)
-                   
-                # Fallback in case of manual edits.
-                else:
-                    print(
-                        "An error occured when trying to download",
-                        row['Organization'],
-                        "|",
-                        row['URL']
-                        )
-                    download_status = False
-                    #append_csv(download_status)
-                    next(readsite)
-            
-            # End of script when not in download time.
-            else:
-                print("Cannot download right now.")
-                quit()
+        # End of script when not in download time.
+        else:
+            print("Cannot download right now.")
+            quit()
