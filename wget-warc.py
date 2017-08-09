@@ -28,6 +28,7 @@ def cli():
         action='store_true',
         help='custom path to user config file',
         default=(getcwd(), 'default.conf'))
+    #TODO: Add -v / --verbose mode and change all prints accordingly.
 
     args = parser.parse_args()
 
