@@ -3,7 +3,6 @@
 
 import argparse
 from configparser import ConfigParser
-from itertools import chain
 import logging
 from os import getcwd, path
 
@@ -42,7 +41,6 @@ def cli():
     logging.basicConfig(level=args.loglevel)
     # Read config file, default.conf is set as default in parser.
     conf = ConfigParser()
-    conf.sections()
     conf.read(args.config)
     download_dir = str(conf['Settings']['downloaddir'])
     csv_file = str(conf['Settings']['csvfile'])

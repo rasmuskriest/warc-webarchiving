@@ -31,7 +31,7 @@ def write_state(conn, row, table_name, column_url, column_state):
 
     writecurs.execute('UPDATE {tn} SET {cn}=("done") WHERE {idf}=(?)'.\
         format(tn=table_name, cn=column_state, idf=column_url), row)
-    logging.info("%s successfully marked as done." % row)
+    logging.info("%s successfully marked as done in %s" % (row, table_name))
 
 #c.execute("UPDATE {tn} SET {cn}=('Hi World') WHERE {idf}=(123456)".\
 #        format(tn=table_name, cn=column_name, idf=id_column))
