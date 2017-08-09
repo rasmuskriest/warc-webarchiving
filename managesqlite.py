@@ -37,7 +37,8 @@ def import_csv(csvfile, dbname, database):
         conn = sqlite3.connect(database)
         curs = conn.cursor()
         # Create table based on column_names
-        curs.execute("CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT);".format(table_name, (*column_names)))
+        curs.execute("CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT);".\
+        format(table_name, (*column_names)))
 
         # Import csvfile into database
         with open(csvfile,'r') as readfile:
@@ -47,7 +48,8 @@ def import_csv(csvfile, dbname, database):
                 for column in column_names:
                     to_db.append(row[column])
                 #print(to_db)
-                curs.execute("INSERT INTO {} ({}, {}, {}, {}) VALUES (?, ?, ?, ?);".format(table_name, (*column_names)), to_db)
+                curs.execute("INSERT INTO {} ({}, {}, {}, {}) VALUES (?, ?, ?, ?);".\
+                format(table_name, (*column_names)), to_db)
                 
         conn.commit()
         conn.close()
