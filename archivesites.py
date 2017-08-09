@@ -24,31 +24,44 @@ def check_time():
         return False
         #Print("check_time set False")
 
-def archive_websites(download_dir, csv_file, db_name, database, table_name):
+def write_state(conn, row, table_name, column_url, column_state):
+    """Write new state in respecting column of the database."""
+    writecurs = conn.cursor()
+
+    writecurs.execute('UPDATE {tn} SET {cn}=("done") WHERE {idf}=(?)'.\
+        format(tn=table_name, cn=column_state, idf=column_url), row)
+    #print(row, "successfully marked as done.")
+
+#c.execute("UPDATE {tn} SET {cn}=('Hi World') WHERE {idf}=(123456)".\
+#        format(tn=table_name, cn=column_name, idf=id_column))
+
+
+def archive_websites(download_dir, db_name, database, table_name, column_url, column_state):
     """Archive websites from a csv"""
     #sqlite_exists = managesqlite.check_sqlite(db_name, database)
     sqlite_exists = True #TODO: Check for database and act accordingly.
     download_time = check_time()
-    column_url = 'Url'
-    column_state = 'State'
 
     if sqlite_exists: 
         conn = sqlite3.connect(database)
-        curs = conn.cursor()
-  
+        readcurs = conn.cursor()
+
         # Check for possible download time.
         if download_time is True:
-            #print("It is time to download!")              
+            #print("It is time to download!")
             # Select URL in rows that are not done
-            curs.execute('SELECT ({coi}) FROM {tn} WHERE {cn}=""'.\
+            readcurs.execute('SELECT ({coi}) FROM {tn} WHERE {cn}=""'.\
             format(coi=column_url, tn=table_name, cn=column_state))
-            for row in curs:
+            for row in readcurs:
                 #print(curs)
                 for elem in row:
-                    print("Downloading", elem)
-                    subprocess.run(['./wget.sh', elem])
-                    print(elem, "successfully downloaded.")
-                #TODO: Second cursor for writing stuff
+                    #print("Downloading", elem)
+                    subprocess.run(['./wget.sh', elem, download_dir])
+                    # TODO: Give download_dir to script.
+                    write_state(conn, row, table_name, column_url, column_state)
+                    #print(elem, "successfully downloaded.")
+            conn.commit()
+            conn.close()
 
         # End of script when not in download time.
         else:
