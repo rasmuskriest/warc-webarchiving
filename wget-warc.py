@@ -4,6 +4,7 @@
 import argparse
 from configparser import ConfigParser
 from itertools import chain
+import logging
 from os import getcwd, path
 
 import archivesites
@@ -27,11 +28,18 @@ def cli():
         '-c', '--config',
         action='store_true',
         help='custom path to user config file',
-        default=(getcwd(), 'default.conf'))
-    #TODO: Add -v / --verbose mode and change all prints accordingly.
+        default=(getcwd(), 'default.conf')
+        )
+    parser.add_argument(
+        '-v', '--verbose',
+        action='store_const', dest='loglevel', const=logging.INFO,
+        help='enable verbose mode and get verbose info.'
+    )
 
+    # Parse arguments.
     args = parser.parse_args()
-
+    # Enable loglevel parsing.
+    logging.basicConfig(level=args.loglevel)
     # Read config file, default.conf is set as default in parser.
     conf = ConfigParser()
     conf.sections()
@@ -52,18 +60,18 @@ def cli():
     if args.mode == 'run':
         try:
             archivesites.archive_websites(download_dir, db_name, database, table_name, column_url, column_state)
-        except Exception as e:
-            print(str(e))
+        except Exception as exc:
+            print(str(exc))
     elif args.mode == 'import':
         try:
             managesqlite.import_csv(csv_file, db_name, database, table_name, column_names)
-        except Exception as e:
-            print(str(e))
+        except Exception as exc:
+            print(str(exc))
     elif args.mode == 'export':
         try:
             managesqlite.export_csv(csv_file, db_name, database, table_name)
-        except Exception as e:
-            print(str(e))
+        except Exception as exc:
+            print(str(exc))
     else:
         parser.error("Unknown command")
 

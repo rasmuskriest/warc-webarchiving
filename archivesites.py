@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime, time
+import logging
 import subprocess
 import sqlite3
 
@@ -12,17 +13,17 @@ def check_time():
     now = datetime.now()
     # Change to time during which websites should be downloaded.
     if time(00, 00) <= now.time() <= time(23, 59):
+        logging.info("check_time set Truewith now.time() == %s" % str(now.time()))
         return True
-        #print("check_time set True")
 
     # Fallback if passing midnight.
     elif time(00, 00) <= now.time() <= time(6, 00):
+        logging.info("check_time set True with now.time() == %s" % str(now.time()))
         return True
-        #print("check_time set True")
 
     else:
+        logging.info("check_time set Falsewith now.time() == %s" % str(now.time()))
         return False
-        #Print("check_time set False")
 
 def write_state(conn, row, table_name, column_url, column_state):
     """Write new state in respecting column of the database."""
@@ -30,7 +31,7 @@ def write_state(conn, row, table_name, column_url, column_state):
 
     writecurs.execute('UPDATE {tn} SET {cn}=("done") WHERE {idf}=(?)'.\
         format(tn=table_name, cn=column_state, idf=column_url), row)
-    #print(row, "successfully marked as done.")
+    logging.info("%s successfully marked as done." % row)
 
 #c.execute("UPDATE {tn} SET {cn}=('Hi World') WHERE {idf}=(123456)".\
 #        format(tn=table_name, cn=column_name, idf=id_column))
@@ -42,28 +43,28 @@ def archive_websites(download_dir, db_name, database, table_name, column_url, co
     sqlite_exists = True #TODO: Check for database and act accordingly.
     download_time = check_time()
 
-    if sqlite_exists: 
+    if sqlite_exists:
+        logging.info("sqlite_exists == True")
         conn = sqlite3.connect(database)
         readcurs = conn.cursor()
 
         # Check for possible download time.
         if download_time is True:
-            #print("It is time to download!")
+            logging.info("download_time is True")
             # Select URL in rows that are not done
             readcurs.execute('SELECT ({coi}) FROM {tn} WHERE {cn}=""'.\
             format(coi=column_url, tn=table_name, cn=column_state))
             for row in readcurs:
-                #print(curs)
+                logging.info(readcurs)
                 for elem in row:
-                    #print("Downloading", elem)
-                    subprocess.run(['./wget.sh', elem, download_dir])
-                    # TODO: Give download_dir to script.
+                    logging.info("Downloading %s with subprocess.run()" % elem)
+                    #subprocess.run(['./wget.sh', elem, download_dir])
                     write_state(conn, row, table_name, column_url, column_state)
-                    #print(elem, "successfully downloaded.")
+                    logging.info("%s successfully downloaded with subprocess.run()" % elem)
             conn.commit()
             conn.close()
 
         # End of script when not in download time.
         else:
-            print("Cannot download right now.")
+            print("download_time == False")
             quit()

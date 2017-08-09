@@ -3,6 +3,7 @@
 
 import csv
 from datetime import datetime
+import logging
 import shutil
 import sqlite3
 from os.path import getmtime
@@ -13,11 +14,11 @@ def check_sqlite(db_name, database):
     dbfile = Path(database)
     if dbfile.is_file():
         move_sqlite(db_name, database)
+        logging.info("check_sqlite moved the old database and == True")
         return True
-        #print("check_sqlite moved the old database and set True")
     else:
+        logging.info("check_sqlite == True")
         return True
-        #print("check_sqlite set True")
 
 def move_sqlite(db_name, database):
     """Rename SQLite database with timestamp in case it already exists."""
@@ -43,7 +44,7 @@ def import_csv(csv_file, db_name, database, table_name, column_names):
                 to_db = list()
                 for column in column_names:
                     to_db.append(row[column])
-                #print(to_db)
+                logging.info(to_db)
                 curs.execute("INSERT INTO {} ({}, {}, {}, {}) VALUES (?, ?, ?, ?);".\
                 format(table_name, (*column_names)), to_db)
                 
