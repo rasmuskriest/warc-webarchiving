@@ -22,7 +22,7 @@ def cli():
     parser.add_argument(
         'mode',
         choices=['run', 'import', 'export'],
-        help='run wget-warc or work with database.'
+        help='run wget-warc or work with database'
         )
     parser.add_argument(
         '-c', '--config',
@@ -33,7 +33,7 @@ def cli():
     parser.add_argument(
         '-v', '--verbose',
         action='store_const', dest='loglevel', const=logging.INFO,
-        help='enable verbose mode and get verbose info.'
+        help='enable verbose mode and get verbose info'
     )
 
     # Parse arguments.
