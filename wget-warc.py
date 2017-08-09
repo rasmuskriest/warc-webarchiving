@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import configparser
-from os import getcwd
+from configparser import ConfigParser
+from itertools import chain
+from os import getcwd, path
 
 import archivesites
 import managesqlite
@@ -26,32 +27,33 @@ def cli():
         '-c', '--config',
         action='store_true',
         help='custom path to user config file',
-        default=(getcwd(), "default.conf"))
+        default=(getcwd(), 'default.conf'))
 
     args = parser.parse_args()
 
     # Read config file, default.conf is set as default in parser.
-    conf = configparser.ConfigParser()
+    conf = ConfigParser()
+    conf.sections()
     conf.read(args.config)
-    downloaddir = conf['downloaddir']
-    csvfile = conf['csvfile']
-    dbfilename = conf['dbfilename']
+    downloaddir = conf['Settings']['downloaddir']
+    csvfile = conf['Settings']['csvfile']
+    dbname = str(path.splitext(path.basename(csvfile))[0])
 
     # Parse arguments and run accordingly.
-    if args.mode == "run":
+    if args.mode == 'run':
         try:
-            archivesites.archive_websites(downloaddir, csvfile, dbfilename)
-        except Exception, e:
+            archivesites.archive_websites(downloaddir, csvfile, dbname)
+        except Exception as e:
             print(str(e))
-    elif args.mode == "import":
+    elif args.mode == 'import':
         try:
-            managesqlite.import_csv(csvfile, dbfilename)
-        except Exception, e:
+            managesqlite.import_csv(csvfile, dbname)
+        except Exception as e:
             print(str(e))
-    elif args.mode == "export":
+    elif args.mode == 'export':
         try:
-            managesqlite.export_csv(csvfile, dbfilename)
-        except Exception, e:
+            managesqlite.export_csv(csvfile, dbname)
+        except Exception as e:
             print(str(e))
     else:
         parser.error("Unknown command")
