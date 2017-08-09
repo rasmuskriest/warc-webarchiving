@@ -36,21 +36,27 @@ def cli():
     conf = ConfigParser()
     conf.sections()
     conf.read(args.config)
-    download_dir = conf['Settings']['downloaddir']
-    csv_file = conf['Settings']['csvfile']
+    download_dir = str(conf['Settings']['downloaddir'])
+    csv_file = str(conf['Settings']['csvfile'])
+    # Set db_name and database based on csv_file.
     db_name = str(path.splitext(path.basename(csv_file))[0])
     database = (db_name + '.sqlite')
+    # Set table_name and columns manually.
+    # TODO: Read column_names from csv_file with DictReader.
     table_name = 'warclist'
+    column_names = ['Organization', 'Url', 'Last', 'State']
+    column_url = 'Url'
+    column_state = 'State'
 
     # Parse arguments and run accordingly.
     if args.mode == 'run':
         try:
-            archivesites.archive_websites(download_dir, csv_file, db_name, database, table_name)
+            archivesites.archive_websites(download_dir, db_name, database, table_name, column_url, column_state)
         except Exception as e:
             print(str(e))
     elif args.mode == 'import':
         try:
-            managesqlite.import_csv(csv_file, db_name, database, table_name)
+            managesqlite.import_csv(csv_file, db_name, database, table_name, column_names)
         except Exception as e:
             print(str(e))
     elif args.mode == 'export':

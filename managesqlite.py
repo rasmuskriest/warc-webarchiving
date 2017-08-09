@@ -24,11 +24,8 @@ def move_sqlite(db_name, database):
     db_timestamp = str(datetime.fromtimestamp(getmtime(database)).strftime('%Y-%m-%d_%H-%M-%S'))
     shutil.move(database, (db_name + '_' + db_timestamp + '.sqlite'))
 
-def import_csv(csv_file, db_name, database, table_name):
+def import_csv(csv_file, db_name, database, table_name, column_names):
     """Import CSV file to SQLite database."""
-    column_names = ['Organization', 'Url', 'Last', 'State']
-    # TODO: Read column_names from csv_file with DictReader.
-
     sqlite_exists = check_sqlite(db_name, database)
 
     # True is the only possible case.
