@@ -14,8 +14,10 @@ def check_sqlite(dbname, database):
     if dbfile.is_file():
         move_sqlite(dbname, database)
         return True
+        #print("check_sqlite moved the old database and set True")
     else:
         return True
+        #print("check_sqlite set True")
 
 def move_sqlite(dbname, database):
     """Rename SQLite database with timestamp in case it already exists."""
@@ -45,6 +47,7 @@ def import_csv(csvfile, dbname):
                 to_db = list()
                 for column in column_names:
                     to_db.append(row[column])
+                #print(to_db)
                 curs.execute("INSERT INTO {} ({}, {}, {}, {}) VALUES (?, ?, ?, ?);".format(table_name, (*column_names)), to_db)
                 
         conn.commit()
