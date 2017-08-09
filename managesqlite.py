@@ -8,29 +8,28 @@ import sqlite3
 from os.path import getmtime
 from pathlib import Path
 
-def check_sqlite(dbname, database):
+def check_sqlite(db_name, database):
     """Check for SQLite database."""
     dbfile = Path(database)
     if dbfile.is_file():
-        move_sqlite(dbname, database)
+        move_sqlite(db_name, database)
         return True
         #print("check_sqlite moved the old database and set True")
     else:
         return True
         #print("check_sqlite set True")
 
-def move_sqlite(dbname, database):
+def move_sqlite(db_name, database):
     """Rename SQLite database with timestamp in case it already exists."""
     db_timestamp = str(datetime.fromtimestamp(getmtime(database)).strftime('%Y-%m-%d_%H-%M-%S'))
-    shutil.move(database, (dbname + '_' + db_timestamp + '.sqlite'))
+    shutil.move(database, (db_name + '_' + db_timestamp + '.sqlite'))
 
-def import_csv(csvfile, dbname, database):
+def import_csv(csv_file, db_name, database, table_name):
     """Import CSV file to SQLite database."""
-    table_name = 'warclist'
     column_names = ['Organization', 'Url', 'Last', 'State']
-    # TODO: Read column_names from csvfile with DictReader.
+    # TODO: Read column_names from csv_file with DictReader.
 
-    sqlite_exists = check_sqlite(dbname, database)
+    sqlite_exists = check_sqlite(db_name, database)
 
     # True is the only possible case.
     if sqlite_exists:
@@ -40,8 +39,8 @@ def import_csv(csvfile, dbname, database):
         curs.execute("CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT);".\
         format(table_name, (*column_names)))
 
-        # Import csvfile into database
-        with open(csvfile,'r') as readfile:
+        # Import csv_file into database
+        with open(csv_file,'r') as readfile:
             readsite = csv.DictReader(readfile)
             for row in readsite:
                 to_db = list()
@@ -54,5 +53,5 @@ def import_csv(csvfile, dbname, database):
         conn.commit()
         conn.close()
 
-def export_csv(csvfile, dbname, database):
+def export_csv(csv_file, db_name, database, table_name):
     """Export SQLite database to CSV file."""

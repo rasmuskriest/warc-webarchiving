@@ -35,25 +35,26 @@ def cli():
     conf = ConfigParser()
     conf.sections()
     conf.read(args.config)
-    downloaddir = conf['Settings']['downloaddir']
-    csvfile = conf['Settings']['csvfile']
-    dbname = str(path.splitext(path.basename(csvfile))[0])
-    database = (dbname + '.sqlite')
+    download_dir = conf['Settings']['downloaddir']
+    csv_file = conf['Settings']['csvfile']
+    db_name = str(path.splitext(path.basename(csv_file))[0])
+    database = (db_name + '.sqlite')
+    table_name = 'warclist'
 
     # Parse arguments and run accordingly.
     if args.mode == 'run':
         try:
-            archivesites.archive_websites(downloaddir, csvfile, dbname, database)
+            archivesites.archive_websites(download_dir, csv_file, db_name, database, table_name)
         except Exception as e:
             print(str(e))
     elif args.mode == 'import':
         try:
-            managesqlite.import_csv(csvfile, dbname, database)
+            managesqlite.import_csv(csv_file, db_name, database, table_name)
         except Exception as e:
             print(str(e))
     elif args.mode == 'export':
         try:
-            managesqlite.export_csv(csvfile, dbname, database)
+            managesqlite.export_csv(csv_file, db_name, database, table_name)
         except Exception as e:
             print(str(e))
     else:
