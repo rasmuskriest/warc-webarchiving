@@ -24,9 +24,8 @@ def move_sqlite(dbname, database):
     db_timestamp = str(datetime.fromtimestamp(getmtime(database)).strftime('%Y-%m-%d_%H-%M-%S'))
     shutil.move(database, (dbname + '_' + db_timestamp + '.sqlite'))
 
-def import_csv(csvfile, dbname):
+def import_csv(csvfile, dbname, database):
     """Import CSV file to SQLite database."""
-    database = (dbname + '.sqlite')
     table_name = 'warclist'
     column_names = ['Organization', 'Url', 'Last', 'State']
     # TODO: Read column_names from csvfile with DictReader.
@@ -53,5 +52,5 @@ def import_csv(csvfile, dbname):
         conn.commit()
         conn.close()
 
-def export_csv(csvfile, dbname):
+def export_csv(csvfile, dbname, database):
     """Export SQLite database to CSV file."""

@@ -38,21 +38,22 @@ def cli():
     downloaddir = conf['Settings']['downloaddir']
     csvfile = conf['Settings']['csvfile']
     dbname = str(path.splitext(path.basename(csvfile))[0])
+    database = (dbname + '.sqlite')
 
     # Parse arguments and run accordingly.
     if args.mode == 'run':
         try:
-            archivesites.archive_websites(downloaddir, csvfile, dbname)
+            archivesites.archive_websites(downloaddir, csvfile, dbname, database)
         except Exception as e:
             print(str(e))
     elif args.mode == 'import':
         try:
-            managesqlite.import_csv(csvfile, dbname)
+            managesqlite.import_csv(csvfile, dbname, database)
         except Exception as e:
             print(str(e))
     elif args.mode == 'export':
         try:
-            managesqlite.export_csv(csvfile, dbname)
+            managesqlite.export_csv(csvfile, dbname, database)
         except Exception as e:
             print(str(e))
     else:
