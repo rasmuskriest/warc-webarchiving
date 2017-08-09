@@ -32,6 +32,15 @@ optional arguments:
   -c, --config         custom path to user config file
 ```
 
-## Requirements 
+## Voraussetzungen 
 
-`wget-warc` funktioniert am besten in einer `venv` unter _Python 3_.
+`wget-warc` funktioniert nur mit _Python 3_. Derzeit arbeitet das Programm ausschließlich mit in _Python 3_ integrierten Modulen, eine `venv` ist dementsprechend nicht notwendig.
+
+## To-Do / Missings
+
+* Webseiten, deren URL entweder kyrillische Buchstaben aufweist oder `/` enthält, lassen sich derzeit nicht herunterladen. Sie sollten daher vor dem Import ausgeschlossen werden.
+* Der Umgang mit Fehlermeldungen fehlt (fast) vollständig. Daher wird `State == done`, obwohl der Download fehlschlägt.
+* Der Export von der SQLite in eine CSV-Datei ist noch nicht implementiert.
+* Ein Verbose-Modus, der mehr Infos zum Lauf gibt, ist derzeit noch nicht implementiert.
+* Die Funktion `check_time()` wird zwar aufgerufen, hat allerdings keine Auswirkungen.
+* Die Namen der Überschriften aus dem CSV-Datensatz sind aktuell hardcoded.
