@@ -20,5 +20,7 @@ www*/
 *.csv
 !example.csv
 *.sqlite
+*.conf
+!default.conf
 
 .vscode/*

@@ -25,7 +25,7 @@ def cli():
         )
     parser.add_argument(
         '-c', '--config',
-        action='store_true',
+        metavar="FILE",
         help='custom path to user config file',
         default=(getcwd(), 'default.conf')
         )
