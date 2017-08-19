@@ -35,7 +35,7 @@ optional arguments:
 
 ## Voraussetzungen 
 
-`wget-warc` funktioniert nur mit _Python 3_. Derzeit arbeitet das Programm ausschließlich mit in _Python 3_ integrierten Modulen, eine `venv` ist dementsprechend nicht notwendig.
+`wget-warc` funktioniert nur mit einer `venv` innerhalb von _Python 3_ (aktuell mind. 3.5); die benötigten externen Module lassen sich mit dem Befehl `pip -r requirements.txt` installieren.
 
 ## To-Do / Missings
 
