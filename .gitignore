@@ -17,8 +17,8 @@ pyvenv.cfg
 www*/
 *.de
 
-*.csv
-!example.csv
+*.xlsx
+!example.xlsx
 *.sqlite
 *.conf
 !default.conf
