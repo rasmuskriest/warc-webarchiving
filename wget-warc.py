@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+""""Script to automate webarchiving with wget."""
 
 import argparse
 from configparser import ConfigParser
@@ -15,7 +16,7 @@ def cli():
     # Add argument parser. Possible commands can be shown with -h parameter.
     parser = argparse.ArgumentParser(
         prog='wget-warc',
-        description='Scripts to automate webarchiving with wget.'
+        description='Script to automate webarchiving with wget.'
         )
 
     parser.add_argument(
@@ -43,13 +44,13 @@ def cli():
     conf = ConfigParser()
     conf.read(args.config)
     download_dir = str(conf['Settings']['downloaddir'])
-    csv_file = str(conf['Settings']['csvfile'])
-    # Set db_name and database based on csv_file.
-    db_name = str(path.splitext(path.basename(csv_file))[0])
+    excel_file = str(conf['Settings']['excelfile'])
+    # Set db_name and database based on excel_file.
+    db_name = str(path.splitext(path.basename(excel_file))[0])
     database = (db_name + '.sqlite')
-    # Set table_name and columns manually.
-    # TODO: Read column_names from csv_file with DictReader.
-    table_name = 'warclist'
+    # Set sheet_name and columns manually.
+    # TODO: Read column_names from excel_file.
+    sheet_name = 'import'
     column_names = ['Organization', 'Url', 'Last', 'State']
     column_url = 'Url'
     column_state = 'State'
@@ -57,17 +58,35 @@ def cli():
     # Parse arguments and run accordingly.
     if args.mode == 'run':
         try:
-            archivesites.archive_websites(download_dir, db_name, database, table_name, column_url, column_state)
+            archivesites.archive_websites(
+                download_dir,
+                db_name,
+                database,
+                sheet_name,
+                column_url,
+                column_state
+                )
         except Exception as exc:
             print(str(exc))
     elif args.mode == 'import':
         try:
-            managesqlite.import_csv(csv_file, db_name, database, table_name, column_names)
+            managesqlite.import_excel(
+                excel_file,
+                db_name,
+                database,
+                sheet_name,
+                column_names
+                )
         except Exception as exc:
             print(str(exc))
     elif args.mode == 'export':
         try:
-            managesqlite.export_csv(csv_file, db_name, database, table_name)
+            managesqlite.export_excel(
+                excel_file,
+                database,
+                sheet_name,
+                column_names
+                )
         except Exception as exc:
             print(str(exc))
     else:
