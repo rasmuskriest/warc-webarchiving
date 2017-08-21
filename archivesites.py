@@ -23,7 +23,7 @@ def check_time():
         return True
 
     else:
-        logging.info("check_time set Falsewith now.time() == %s", str(now.time()))
+        logging.info("check_time set False with now.time() == %s", str(now.time()))
         return False
 
 def write_state(conn, elem, sheet_name, column_url, column_last, column_state):
