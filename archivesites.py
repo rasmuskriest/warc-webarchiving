@@ -14,7 +14,7 @@ def check_time():
     now = datetime.now()
     # Change to time during which websites should be downloaded.
     if time(00, 00) <= now.time() <= time(23, 59):
-        logging.info("check_time set Truewith now.time() == %s", str(now.time()))
+        logging.info("check_time set True with now.time() == %s", str(now.time()))
         return True
 
     # Fallback if passing midnight.
