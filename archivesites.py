@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Module to to the archiving based on a SQLite database and subprocess.run()"""
 
-from datetime import datetime, time
+from datetime import datetime, date, time
 import logging
 import subprocess
 import sqlite3
@@ -26,19 +26,15 @@ def check_time():
         logging.info("check_time set Falsewith now.time() == %s", str(now.time()))
         return False
 
-def write_state(conn, row, sheet_name, column_url, column_state):
+def write_state(conn, elem, sheet_name, column_url, column_last, column_state):
     """Write new state in respecting column of the database."""
     writecurs = conn.cursor()
 
-    writecurs.execute('UPDATE {tn} SET {cn}=("done") WHERE {idf}=(?)'.\
-        format(tn=sheet_name, cn=column_state, idf=column_url), row)
-    logging.info("%s successfully marked as done in %s", (row, sheet_name))
+    writecurs.execute('UPDATE {tn} SET {cl}=(?), {cs}=("done") WHERE {idf}=(?)'.\
+    format(tn=sheet_name, cl=column_last, cs=column_state, idf=column_url), (date.today(), elem))
+    logging.info("%s successfully marked as done in %s", elem, sheet_name)
 
-#c.execute("UPDATE {tn} SET {cn}=('Hi World') WHERE {idf}=(123456)".\
-#        format(tn=sheet_name, cn=column_name, idf=id_column))
-
-
-def archive_websites(download_dir, db_name, database, sheet_name, column_url, column_state):
+def archive_websites(download_dir, db_name, database, sheet_name, column_url, column_last, column_state):
     """Archive websites from a csv"""
     sqlite_exists = managesqlite.check_sqlite(database)
     download_time = check_time()
@@ -52,14 +48,14 @@ def archive_websites(download_dir, db_name, database, sheet_name, column_url, co
         if download_time is True:
             logging.info("download_time is True")
             # Select URL in rows that are not done
-            readcurs.execute('SELECT ({coi}) FROM {tn} WHERE {cn}=""'.\
+            readcurs.execute('SELECT ({coi}) FROM {tn} WHERE {cn} IS NULL'.\
             format(coi=column_url, tn=sheet_name, cn=column_state))
             for row in readcurs:
                 logging.info(readcurs)
                 for elem in row:
                     logging.info("Downloading %s with subprocess.run()", elem)
-                    subprocess.run(['./wget.sh', elem, download_dir])
-                    write_state(conn, row, sheet_name, column_url, column_state)
+                    #subprocess.run(['./wget.sh', elem, download_dir])
+                    write_state(conn, elem, sheet_name, column_url, column_last, column_state)
                     logging.info("%s successfully downloaded with subprocess.run()", elem)
             conn.commit()
             conn.close()

@@ -49,10 +49,12 @@ def cli():
     db_name = str(path.splitext(path.basename(excel_file))[0])
     database = (db_name + '.sqlite')
     # Set sheet_name and columns manually.
-    # TODO: Read column_names from excel_file.
     sheet_name = 'import'
+    export_sheet = 'export'
+    # TODO: Read column_names from excel_file.
     column_names = ['Organization', 'Url', 'Last', 'State']
     column_url = 'Url'
+    column_last = 'Last'
     column_state = 'State'
 
     # Parse arguments and run accordingly.
@@ -64,6 +66,7 @@ def cli():
                 database,
                 sheet_name,
                 column_url,
+                column_last,
                 column_state
                 )
         except Exception as exc:
@@ -84,7 +87,7 @@ def cli():
             managesqlite.export_excel(
                 excel_file,
                 database,
-                sheet_name,
+                export_sheet,
                 column_names
                 )
         except Exception as exc:

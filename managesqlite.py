@@ -32,7 +32,7 @@ def excel_to_sqlite(excel_file, database, sheet_name, column_names):
     conn = sqlite3.connect(database)
     curs = conn.cursor()
     # Create table based on column_names
-    curs.execute("CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT);".\
+    curs.execute('CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT);'.\
     format(sheet_name, (*column_names)))
     # Import excel_file into database
     import_wb = openpyxl.load_workbook(excel_file)
@@ -45,12 +45,14 @@ def excel_to_sqlite(excel_file, database, sheet_name, column_names):
         to_db = list()
         for index, cell in enumerate(row):
             if index in column_indices:
-                logging.info('col: %s, row: %s, content: %s',
+                logging.info("col: %s, row: %s, content: %s",
                              column_indices[index], index, cell.value)
                 to_db.append(cell.value)
         logging.info(to_db)
-        curs.execute("INSERT INTO {} ({}, {}, {}, {}) VALUES (?, ?, ?, ?);".\
+        curs.execute('INSERT INTO {} ({}, {}, {}, {}) VALUES (?, ?, ?, ?);'.\
         format(sheet_name, (*column_names)), to_db)
+        logging.info("Inserted values into SQLite.")
+
     conn.commit()
     conn.close()
 
@@ -68,7 +70,7 @@ def import_excel(excel_file, db_name, database, sheet_name, column_names):
         logging.info("import_csv() did not move the old database")
         excel_to_sqlite(excel_file, database, sheet_name, column_names)
 
-def sqlite_to_excel(excel_file, database, sheet_name, column_names):
+def sqlite_to_excel(excel_file, database, export_sheet, column_names):
     """Actually write the SQLite database to an Excel sheet."""
     #TODO: Make this work.
 
