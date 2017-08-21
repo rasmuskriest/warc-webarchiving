@@ -54,7 +54,7 @@ def archive_websites(download_dir, db_name, database, sheet_name, column_url, co
                 logging.info(readcurs)
                 for elem in row:
                     logging.info("Downloading %s with subprocess.run()", elem)
-                    #subprocess.run(['./wget.sh', elem, download_dir])
+                    subprocess.run(['./wget.sh', elem, download_dir])
                     write_state(conn, elem, sheet_name, column_url, column_last, column_state)
                     logging.info("%s successfully downloaded with subprocess.run()", elem)
             conn.commit()
