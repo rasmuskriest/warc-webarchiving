@@ -1,1 +1,2 @@
+wheel==0.30.0
 openpyxl==2.4.8
