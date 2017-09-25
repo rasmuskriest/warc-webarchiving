@@ -34,7 +34,7 @@ def write_state(conn, elem, sheet_name, column_url, column_last, column_state):
     format(tn=sheet_name, cl=column_last, cs=column_state, idf=column_url), (date.today(), elem))
     logging.info("%s successfully marked as done in %s", elem, sheet_name)
 
-def archive_websites(download_dir, db_name, database, sheet_name, column_url, column_last, column_state):
+def archive_websites(download_dir, database, sheet_name, column_url, column_last, column_state):
     """Archive websites from a csv"""
     sqlite_exists = managesqlite.check_sqlite(database)
     download_time = check_time()
