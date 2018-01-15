@@ -22,5 +22,3 @@ www*/
 *.sqlite
 *.conf
 !default.conf
-
-.vscode/*
