@@ -9,30 +9,36 @@ import sqlite3
 
 import managesqlite
 
+
 def check_time():
     """Check whether websites should be archived."""
     now = datetime.now()
     # Change to time during which websites should be downloaded.
     if time(00, 00) <= now.time() <= time(23, 59):
-        logging.info("check_time set True with now.time() == %s", str(now.time()))
+        logging.info("check_time set True with now.time() == %s",
+                     str(now.time()))
         return True
 
     # Fallback if passing midnight.
     elif time(00, 00) <= now.time() <= time(6, 00):
-        logging.info("check_time set True with now.time() == %s", str(now.time()))
+        logging.info("check_time set True with now.time() == %s",
+                     str(now.time()))
         return True
 
     else:
-        logging.info("check_time set False with now.time() == %s", str(now.time()))
+        logging.info("check_time set False with now.time() == %s",
+                     str(now.time()))
         return False
+
 
 def write_state(conn, elem, sheet_name, column_url, column_last, column_state):
     """Write new state in respecting column of the database."""
     writecurs = conn.cursor()
 
-    writecurs.execute('UPDATE {tn} SET {cl}=(?), {cs}=("done") WHERE {idf}=(?)'.\
-    format(tn=sheet_name, cl=column_last, cs=column_state, idf=column_url), (date.today(), elem))
+    writecurs.execute('UPDATE {tn} SET {cl}=(?), {cs}=("done") WHERE {idf}=(?)'.
+                      format(tn=sheet_name, cl=column_last, cs=column_state, idf=column_url), (date.today(), elem))
     logging.info("%s successfully marked as done in %s", elem, sheet_name)
+
 
 def archive_websites(download_dir, database, sheet_name, column_url, column_last, column_state):
     """Archive websites from a csv"""
@@ -48,23 +54,25 @@ def archive_websites(download_dir, database, sheet_name, column_url, column_last
         if download_time is True:
             logging.info("download_time is True")
             # Select URL in rows that are not done
-            readcurs.execute('SELECT ({coi}) FROM {tn} WHERE {cn} IS NULL'.\
-            format(coi=column_url, tn=sheet_name, cn=column_state))
+            readcurs.execute('SELECT ({coi}) FROM {tn} WHERE {cn} IS NULL'.
+                             format(coi=column_url, tn=sheet_name, cn=column_state))
             for row in readcurs:
                 logging.info(readcurs)
                 for elem in row:
                     logging.info("Downloading %s with subprocess.run()", elem)
                     subprocess.run(['./wget.sh', elem, download_dir])
-                    write_state(conn, elem, sheet_name, column_url, column_last, column_state)
-                    logging.info("%s successfully downloaded with subprocess.run()", elem)
+                    write_state(conn, elem, sheet_name, column_url,
+                                column_last, column_state)
+                    logging.info(
+                        "%s successfully downloaded with subprocess.run()", elem)
             conn.commit()
             conn.close()
 
         # End of script when not in download time.
         else:
             logging.info("download_time == False")
-            print("Archiving is not possible based on this machines current time (%s)."\
-            % datetime.now())
+            print("Archiving is not possible based on this machines current time (%s)."
+                  % datetime.now())
             quit()
 
     # End of script when SQLite database does not exist.

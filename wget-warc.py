@@ -10,6 +10,7 @@ from os import getcwd, path
 import archivesites
 import managesqlite
 
+
 def cli():
     """Main CLI interface"""
 
@@ -17,19 +18,19 @@ def cli():
     parser = argparse.ArgumentParser(
         prog='wget-warc',
         description='Script to automate webarchiving with wget.'
-        )
+    )
 
     parser.add_argument(
         'mode',
         choices=['run', 'import', 'export'],
         help='run wget-warc or work with database'
-        )
+    )
     parser.add_argument(
         '-c', '--config',
         metavar="FILE",
         help='custom path to user config file',
         default=(getcwd(), 'default.conf')
-        )
+    )
     parser.add_argument(
         '-v', '--verbose',
         action='store_const', dest='loglevel', const=logging.INFO,
@@ -68,7 +69,7 @@ def cli():
                 column_url,
                 column_last,
                 column_state
-                )
+            )
         except Exception as exc:
             print(str(exc))
     elif args.mode == 'import':
@@ -79,7 +80,7 @@ def cli():
                 database,
                 sheet_name,
                 column_names
-                )
+            )
         except Exception as exc:
             print(str(exc))
     elif args.mode == 'export':
@@ -89,11 +90,12 @@ def cli():
                 database,
                 export_sheet,
                 column_names
-                )
+            )
         except Exception as exc:
             print(str(exc))
     else:
         parser.error("Unknown command")
+
 
 if __name__ == "__main__":
     cli()
