@@ -10,7 +10,7 @@ Die automatisierte Webarchivierung kann mit dem Parameter `run` angestoßen werd
 python wget-warc.py run
 ```
 
-Für einen manuellen Im- oder Export zwischen CSV-Liste und SQLite-Datenbank 
+Für einen manuellen Im- oder Export zwischen CSV-Liste und SQLite-Datenbank
 
 ```
 python wget-warc.py import
@@ -33,7 +33,7 @@ optional arguments:
   -v, --verbose        enable verbose mode and get verbose info
 ```
 
-## Voraussetzungen 
+## Voraussetzungen
 
 `wget-warc` funktioniert nur mit einer `venv` innerhalb von _Python 3_ (aktuell mind. 3.5); die benötigten externen Module lassen sich mit dem Befehl `pip install -r requirements.txt` installieren.
 
