@@ -54,7 +54,7 @@ def excel_to_sqlite(excel_file, database, import_sheet, column_names):
                              column_indices[index], index, cell.value)
                 to_db.append(cell.value)
         logging.info(to_db)
-        curs.execute('INSERT INTO {} ({}, {}, {}, {}) VALUES (?, ?, ?, ?);'.
+        curs.execute('INSERT INTO {} ({}, {}, {}, {}, {}, {}) VALUES (?, ?, ?, ?, ?, ?);'.
                      format(import_sheet, (*column_names)), to_db)
         logging.info("Inserted values into SQLite.")
 
