@@ -79,7 +79,18 @@ def import_excel(excel_file, db_name, database, import_sheet, column_names):
 
 def sqlite_to_excel(excel_file, database, export_sheet, column_names):
     """Actually write the SQLite database to an Excel sheet."""
-    # TODO: Make this work.
+    conn = sqlite3.connect(database)
+    curs = conn.cursor()
+    import_wb = openpyxl.load_workbook(excel_file)
+    export_ws = import_wb.create_sheet(title=export_sheet)
+
+    # Append rows from database in Excel sheet
+    for row in curs.execute('SELECT * FROM import'):
+        # TODO: Include header row, remove Id column
+        logging.info(row)
+        export_ws.append(row)
+
+    import_wb.save(excel_file)
 
 
 def export_excel(excel_file, database, export_sheet, column_names):
