@@ -49,26 +49,20 @@ def cli():
     # Set db_name and database based on excel_file.
     db_name = str(path.splitext(path.basename(excel_file))[0])
     database = (db_name + '.sqlite')
-    # Set sheet_name and columns manually.
-    sheet_name = 'import'
+    # Set sheets for import / export and columns.
+    import_sheet = 'import'
     export_sheet = 'export'
-    # TODO: Read column_names from excel_file.
-    column_names = ['Organization', 'Url', 'Last', 'State']
-    column_url = 'Url'
-    column_last = 'Last'
-    column_state = 'State'
+    column_names = ['Organization', 'Url',
+                    'SizeWarc', 'SizeLog', 'Last', 'State']
 
     # Parse arguments and run accordingly.
     if args.mode == 'run':
         try:
             archivesites.archive_websites(
                 download_dir,
-                db_name,
                 database,
-                sheet_name,
-                column_url,
-                column_last,
-                column_state
+                import_sheet,
+                column_names
             )
         except Exception as exc:
             print(str(exc))
@@ -78,7 +72,7 @@ def cli():
                 excel_file,
                 db_name,
                 database,
-                sheet_name,
+                import_sheet,
                 column_names
             )
         except Exception as exc:
