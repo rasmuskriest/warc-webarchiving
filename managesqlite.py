@@ -37,7 +37,7 @@ def excel_to_sqlite(excel_file, database, sheet_name, column_names):
     conn = sqlite3.connect(database)
     curs = conn.cursor()
     # Create table based on column_names
-    curs.execute('CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT);'.
+    curs.execute('CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT);'.
                  format(sheet_name, (*column_names)))
     # Import excel_file into database
     import_wb = openpyxl.load_workbook(excel_file)
