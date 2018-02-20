@@ -46,7 +46,7 @@ def download_site(download_dir, import_sheet, conn, elem):
                  elem, datetime.now())
     subprocess.run(['./wget.sh', elem, download_dir])
     write_state(conn, elem, import_sheet)
-    logging.info("%s successfully downloaded with subprocess.run()", elem)
+    logging.info("%s successfully downloaded with subprocess.run() at %s", elem, datetime.now())
 
 
 def archive_websites(download_dir, database, import_sheet, column_names):
