@@ -49,6 +49,8 @@ def cli():
     # Set db_name and database based on excel_file.
     db_name = str(path.splitext(path.basename(excel_file))[0])
     database = (db_name + '.sqlite')
+    # Set worker number
+    workers = int(conf['Settings']['workers'])
     # Set sheets for import / export and columns.
     import_sheet = 'import'
     export_sheet = 'export'
@@ -62,7 +64,8 @@ def cli():
                 download_dir,
                 database,
                 import_sheet,
-                column_names
+                column_names,
+                workers
             )
         except Exception as exc:
             print(str(exc))
