@@ -23,11 +23,11 @@ def check_sqlite(database):
         return False
 
 
-def move_sqlite(db_name, database):
+def move_sqlite(db_name, db_path, database):
     """Rename SQLite database with timestamp in case it already exists."""
     db_timestamp = str(datetime.fromtimestamp(
         getmtime(database)).strftime('%Y-%m-%d_%H-%M-%S'))
-    shutil.move(database, (db_name + '_' + db_timestamp + '.sqlite'))
+    shutil.move(database, (db_path + db_name + '_' + db_timestamp + '.sqlite'))
     logging.info("move_sqlite() moved %s to %s_%s.sqlite",
                  database, db_name, db_timestamp)
 
@@ -37,38 +37,41 @@ def excel_to_sqlite(excel_file, database, import_sheet, column_names):
     conn = sqlite3.connect(database)
     curs = conn.cursor()
     # Create table based on column_names
-    curs.execute('CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT);'.
+    curs.execute('CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT)'.
                  format(import_sheet, (*column_names)))
     # Import excel_file into database
     import_wb = openpyxl.load_workbook(excel_file)
     import_ws = import_wb.get_sheet_by_name(import_sheet)
     column_indices = {n: cell.value for n, cell in enumerate(import_ws[1])
                       if cell.value in column_names}
-    logging.info(column_indices)
+    logging.debug(column_indices)
 
     for row in import_ws.iter_rows(row_offset=1):
         to_db = list()
         for index, cell in enumerate(row):
             if index in column_indices:
-                logging.info("col: %s, row: %s, content: %s",
-                             column_indices[index], index, cell.value)
+                logging.debug("col: %s, row: %s, content: %s",
+                              column_indices[index], index, cell.value)
                 to_db.append(cell.value)
-        logging.info(to_db)
-        curs.execute('INSERT INTO {} ({}, {}, {}, {}, {}, {}) VALUES (?, ?, ?, ?, ?, ?);'.
+        logging.debug(to_db)
+        curs.execute('INSERT INTO {} ({}, {}, {}, {}, {}, {}) VALUES (?, ?, ?, ?, ?, ?)'.
                      format(import_sheet, (*column_names)), to_db)
         logging.info("Inserted values into SQLite.")
+        curs.execute('DELETE FROM {} WHERE {coi} IS NULL'.format(
+            import_sheet, coi="Url"))
+        logging.info("Deleted empty rows.")
 
     conn.commit()
     conn.close()
 
 
-def import_excel(excel_file, db_name, database, import_sheet, column_names):
+def import_excel(excel_file, db_name, db_path, database, import_sheet, column_names):
     """Import CSV file to SQLite database."""
     sqlite_exists = check_sqlite(database)
 
     if sqlite_exists is True:
         # Move database first before creating a new one.
-        move_sqlite(db_name, database)
+        move_sqlite(db_name, db_path, database)
         logging.info("import_csv() moved the old database")
         excel_to_sqlite(excel_file, database, import_sheet, column_names)
 
@@ -87,7 +90,7 @@ def sqlite_to_excel(excel_file, database, export_sheet, column_names):
     # Append rows from database in Excel sheet
     for row in curs.execute('SELECT * FROM import'):
         # TODO: Include header row, remove Id column
-        logging.info(row)
+        logging.debug(row)
         export_ws.append(row)
 
     import_wb.save(excel_file)

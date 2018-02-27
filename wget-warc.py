@@ -29,31 +29,46 @@ def cli():
         '-c', '--config',
         metavar="FILE",
         help='custom path to user config file',
-        default=(getcwd(), 'default.conf')
+        default=(getcwd(), 'config/default.conf')
     )
     parser.add_argument(
         '-v', '--verbose',
         action='store_const', dest='loglevel', const=logging.INFO,
         help='enable verbose mode and get verbose info'
     )
+    parser.add_argument(
+        '-d', '--debug',
+        action='store_const', dest='loglevel', const=logging.DEBUG,
+        help='enable debug mode and get debug info'
+    )
 
     # Parse arguments.
     args = parser.parse_args()
-    # Enable loglevel parsing.
-    logging.basicConfig(level=args.loglevel)
     # Read config file, default.conf is set as default in parser.
     conf = ConfigParser()
     conf.read(args.config)
-    download_dir = str(conf['Settings']['downloaddir'])
+    download_dir = str(path.abspath(conf['Settings']['downloaddir']))
     excel_file = str(conf['Settings']['excelfile'])
     # Set db_name and database based on excel_file.
     db_name = str(path.splitext(path.basename(excel_file))[0])
-    database = (db_name + '.sqlite')
+    db_path = str(path.split(excel_file)[0] + '/')
+    database = (db_path + db_name + '.sqlite')
+    # Set worker number
+    workers = int(conf['Settings']['workers'])
     # Set sheets for import / export and columns.
     import_sheet = 'import'
     export_sheet = 'export'
     column_names = ['Organization', 'Url',
                     'SizeWarc', 'SizeLog', 'Last', 'State']
+    # Enable loglevel parsing.
+    logging.basicConfig(level=args.loglevel,
+                        format="%(asctime)s [%(levelname)-5.5s]  %(message)s",
+                        handlers=[
+                            logging.FileHandler(
+                                "{0}/{1}.log".format(db_path, db_name)),
+                            logging.StreamHandler()
+                        ]
+                        )
 
     # Parse arguments and run accordingly.
     if args.mode == 'run':
@@ -62,7 +77,8 @@ def cli():
                 download_dir,
                 database,
                 import_sheet,
-                column_names
+                column_names,
+                workers
             )
         except Exception as exc:
             print(str(exc))
@@ -71,6 +87,7 @@ def cli():
             managesqlite.import_excel(
                 excel_file,
                 db_name,
+                db_path,
                 database,
                 import_sheet,
                 column_names
