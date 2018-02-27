@@ -9,6 +9,7 @@ pyvenv.cfg
 .Python
 .DS_Store
 *.pyc
+settings.json
 
 *.log
 *.db
