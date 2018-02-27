@@ -29,7 +29,7 @@ def cli():
         '-c', '--config',
         metavar="FILE",
         help='custom path to user config file',
-        default=(getcwd(), 'default.conf')
+        default=(getcwd(), 'config/default.conf')
     )
     parser.add_argument(
         '-v', '--verbose',
@@ -48,7 +48,8 @@ def cli():
     excel_file = str(conf['Settings']['excelfile'])
     # Set db_name and database based on excel_file.
     db_name = str(path.splitext(path.basename(excel_file))[0])
-    database = (db_name + '.sqlite')
+    db_path = str(path.split(excel_file)[0] + '/')
+    database = (db_path + db_name + '.sqlite')
     # Set worker number
     workers = int(conf['Settings']['workers'])
     # Set sheets for import / export and columns.
@@ -74,6 +75,7 @@ def cli():
             managesqlite.import_excel(
                 excel_file,
                 db_name,
+                db_path,
                 database,
                 import_sheet,
                 column_names

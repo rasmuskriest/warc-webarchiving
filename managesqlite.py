@@ -23,11 +23,11 @@ def check_sqlite(database):
         return False
 
 
-def move_sqlite(db_name, database):
+def move_sqlite(db_name, db_path, database):
     """Rename SQLite database with timestamp in case it already exists."""
     db_timestamp = str(datetime.fromtimestamp(
         getmtime(database)).strftime('%Y-%m-%d_%H-%M-%S'))
-    shutil.move(database, (db_name + '_' + db_timestamp + '.sqlite'))
+    shutil.move(database, (db_path + db_name + '_' + db_timestamp + '.sqlite'))
     logging.info("move_sqlite() moved %s to %s_%s.sqlite",
                  database, db_name, db_timestamp)
 
@@ -62,13 +62,13 @@ def excel_to_sqlite(excel_file, database, import_sheet, column_names):
     conn.close()
 
 
-def import_excel(excel_file, db_name, database, import_sheet, column_names):
+def import_excel(excel_file, db_name, db_path, database, import_sheet, column_names):
     """Import CSV file to SQLite database."""
     sqlite_exists = check_sqlite(database)
 
     if sqlite_exists is True:
         # Move database first before creating a new one.
-        move_sqlite(db_name, database)
+        move_sqlite(db_name, db_path, database)
         logging.info("import_csv() moved the old database")
         excel_to_sqlite(excel_file, database, import_sheet, column_names)
 

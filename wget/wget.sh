@@ -3,6 +3,8 @@
 url=$1
 dir=$2
 
+mkdir -p $dir
+
 wget $url \
     --recursive \
     --mirror \
