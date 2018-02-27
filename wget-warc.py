@@ -44,8 +44,6 @@ def cli():
 
     # Parse arguments.
     args = parser.parse_args()
-    # Enable loglevel parsing.
-    logging.basicConfig(level=args.loglevel)
     # Read config file, default.conf is set as default in parser.
     conf = ConfigParser()
     conf.read(args.config)
@@ -62,6 +60,15 @@ def cli():
     export_sheet = 'export'
     column_names = ['Organization', 'Url',
                     'SizeWarc', 'SizeLog', 'Last', 'State']
+    # Enable loglevel parsing.
+    logging.basicConfig(level=args.loglevel,
+                        format="%(asctime)s [%(levelname)-5.5s]  %(message)s",
+                        handlers=[
+                            logging.FileHandler(
+                                "{0}/{1}.log".format(db_path, db_name)),
+                            logging.StreamHandler()
+                        ]
+                        )
 
     # Parse arguments and run accordingly.
     if args.mode == 'run':
