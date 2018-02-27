@@ -5,6 +5,7 @@
 from datetime import datetime, date, time
 import logging
 import multiprocessing
+from os.path import getsize
 import subprocess
 import sqlite3
 
@@ -32,13 +33,20 @@ def check_time():
         return False
 
 
-def write_state(database, elem, import_sheet):
+def write_state(database, elem, import_sheet, download_dir):
     """Write new state in respecting column of the database."""
     conn = sqlite3.connect(database)
     writecurs = conn.cursor()
 
-    writecurs.execute('UPDATE {tn} SET {cl}=(?), {cs}=("done") WHERE {idf}=(?)'.
-                      format(tn=import_sheet, cl="Last", cs="State", idf="Url"), (date.today(), elem))
+    size_warc = float(getsize(download_dir + '/' +
+                              elem + '.warc.gz') / float(1 << 20))
+    size_log = float(getsize(download_dir + '/' +
+                             elem + '.log') / float(1 << 20))
+    logging.info("WARC size: %s", size_warc)
+    logging.info("Log size: %s", size_log)
+
+    writecurs.execute('UPDATE {tn} SET {csw}=(?), {csl}=(?), {cl}=(?), {cs}=("done") WHERE {idf}=(?)'.
+                      format(tn=import_sheet, csw="SizeWarc", csl="SizeLog", cl="Last", cs="State", idf="Url"), (size_warc, size_log, date.today(), elem))
     logging.info("%s successfully marked as done in %s", elem, import_sheet)
 
     conn.commit()
@@ -52,7 +60,7 @@ def download_site(download_dir, import_sheet, database, elem):
     subprocess.run(['./wget.sh', elem, download_dir], cwd='./wget')
     logging.info(
         "%s successfully downloaded with subprocess.run() at %s", elem, datetime.now())
-    write_state(database, elem, import_sheet)
+    write_state(database, elem, import_sheet, download_dir)
 
 
 def work_sqlite(num, database, import_sheet, download_dir, column_names, workers):

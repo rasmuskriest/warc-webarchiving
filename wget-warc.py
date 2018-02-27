@@ -44,7 +44,7 @@ def cli():
     # Read config file, default.conf is set as default in parser.
     conf = ConfigParser()
     conf.read(args.config)
-    download_dir = str(conf['Settings']['downloaddir'])
+    download_dir = str(path.abspath(conf['Settings']['downloaddir']))
     excel_file = str(conf['Settings']['excelfile'])
     # Set db_name and database based on excel_file.
     db_name = str(path.splitext(path.basename(excel_file))[0])
