@@ -36,6 +36,11 @@ def cli():
         action='store_const', dest='loglevel', const=logging.INFO,
         help='enable verbose mode and get verbose info'
     )
+    parser.add_argument(
+        '-d', '--debug',
+        action='store_const', dest='loglevel', const=logging.DEBUG,
+        help='enable debug mode and get debug info'
+    )
 
     # Parse arguments.
     args = parser.parse_args()

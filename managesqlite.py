@@ -44,16 +44,16 @@ def excel_to_sqlite(excel_file, database, import_sheet, column_names):
     import_ws = import_wb.get_sheet_by_name(import_sheet)
     column_indices = {n: cell.value for n, cell in enumerate(import_ws[1])
                       if cell.value in column_names}
-    logging.info(column_indices)
+    logging.debug(column_indices)
 
     for row in import_ws.iter_rows(row_offset=1):
         to_db = list()
         for index, cell in enumerate(row):
             if index in column_indices:
-                logging.info("col: %s, row: %s, content: %s",
-                             column_indices[index], index, cell.value)
+                logging.debug("col: %s, row: %s, content: %s",
+                              column_indices[index], index, cell.value)
                 to_db.append(cell.value)
-        logging.info(to_db)
+        logging.debug(to_db)
         curs.execute('INSERT INTO {} ({}, {}, {}, {}, {}, {}) VALUES (?, ?, ?, ?, ?, ?)'.
                      format(import_sheet, (*column_names)), to_db)
         logging.info("Inserted values into SQLite.")
@@ -90,7 +90,7 @@ def sqlite_to_excel(excel_file, database, export_sheet, column_names):
     # Append rows from database in Excel sheet
     for row in curs.execute('SELECT * FROM import'):
         # TODO: Include header row, remove Id column
-        logging.info(row)
+        logging.debug(row)
         export_ws.append(row)
 
     import_wb.save(excel_file)

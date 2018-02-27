@@ -42,8 +42,8 @@ def write_state(database, elem, import_sheet, download_dir):
                               elem + '.warc.gz') / float(1 << 20))
     size_log = float(getsize(download_dir + '/' +
                              elem + '.log') / float(1 << 20))
-    logging.info("WARC size: %s", size_warc)
-    logging.info("Log size: %s", size_log)
+    logging.debug("WARC size: %s", size_warc)
+    logging.debug("Log size: %s", size_log)
 
     writecurs.execute('UPDATE {tn} SET {csw}=(?), {csl}=(?), {cl}=(?), {cs}=("done") WHERE {idf}=(?)'.
                       format(tn=import_sheet, csw="SizeWarc", csl="SizeLog", cl="Last", cs="State", idf="Url"), (size_warc, size_log, date.today(), elem))
@@ -73,7 +73,7 @@ def work_sqlite(num, database, import_sheet, download_dir, column_names, workers
                      format(coi="Url", tn=import_sheet, cn="State"))
 
     sites = readcurs.fetchall()
-    logging.info(sites)
+    logging.debug(sites)
     # Close database immediately after fetching entry.
     conn.close()
 
