@@ -17,4 +17,3 @@ wpull $url \
     --delete-after --database $url.db \
     --quiet \
     --output-file $url.log
-    
