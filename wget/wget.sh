@@ -1,14 +1,15 @@
 #!/bin/sh
 
 url=$1
-dir=$2
+folder=$2
+dir=$3
 
 mkdir -p $dir
 
 wget $url \
     --recursive \
     --mirror \
-    --warc-file="$dir/$url" \
+    --warc-file="$dir/$folder" \
     --warc-cdx \
     --page-requisites \
     --html-extension \
@@ -20,4 +21,4 @@ wget $url \
     --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36"\
     --wait=1 \
     --random-wait \
-    --append-output="$dir/$url".log
+    --append-output="$dir/$folder".log

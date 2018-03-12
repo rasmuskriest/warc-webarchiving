@@ -1,12 +1,13 @@
 #!/bin/sh
 
 url=$1
-dir=$2
+folder=$2
+dir=$3
 
 mkdir -p $dir
 
 wpull $url \
-    --warc-file "$dir/$url" \
+    --warc-file "$dir/$folder" \
     --warc-append \
     --no-check-certificate \
     --no-robots --user-agent "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36" \
@@ -21,4 +22,4 @@ wpull $url \
     --timeout 60 --session-timeout 21600 \
     --delete-after --database $url.db \
     --quiet \
-    --output-file "$dir/$url".log
+    --output-file "$dir/$folder".log

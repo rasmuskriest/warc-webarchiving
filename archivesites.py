@@ -53,22 +53,23 @@ def write_state(database, elem, import_sheet, download_dir):
     conn.close()
 
 
-def download_site(download_dir, import_sheet, database, elem, engine):
+def download_site(download_dir, import_sheet, database, url, folder, engine):
     """Actually download the site with a subprocess."""
     logging.debug("Engine: %s", engine)
 
     logging.info("Downloading %s with subprocess.run() at %s with %s",
-                 elem, datetime.now(), engine)
+                 url, datetime.now(), engine)
 
     if engine == 'wget':
-        subprocess.run(['./wget.sh', elem, download_dir], cwd='./wget')
+        subprocess.run(['./wget.sh', url, folder, download_dir], cwd='./wget')
 
     if engine == 'wpull':
-        subprocess.run(['./wpull.sh', elem, download_dir], cwd='./wpull')
+        subprocess.run(['./wpull.sh', url, folder,
+                        download_dir], cwd='./wpull')
 
     logging.info(
-        "%s successfully downloaded with subprocess.run() at %s", elem, datetime.now())
-    write_state(database, elem, import_sheet, download_dir)
+        "%s successfully downloaded with subprocess.run() at %s", url, datetime.now())
+    write_state(database, url, import_sheet, download_dir)
 
 
 def work_sqlite(num, database, import_sheet, download_dir, column_names, workers, engine):
@@ -77,8 +78,8 @@ def work_sqlite(num, database, import_sheet, download_dir, column_names, workers
     conn = sqlite3.connect(database)
     readcurs = conn.cursor()
     # Select URL in rows that are not done
-    readcurs.execute('SELECT ({coi}) FROM {tn} WHERE {cn} IS NULL'.
-                     format(coi="Url", tn=import_sheet, cn="State"))
+    readcurs.execute('SELECT ({coi}), ({coj}) FROM {tn} WHERE {cn} IS NULL'.
+                     format(coi="Url", coj="Folder", tn=import_sheet, cn="State"))
 
     sites = readcurs.fetchall()
     logging.debug(sites)
@@ -87,10 +88,14 @@ def work_sqlite(num, database, import_sheet, download_dir, column_names, workers
 
     # Get specific rows based on worker number
     rows = sites[num::workers]
+    logging.debug("Worker %s got dict %s", num, rows)
     logging.info("Worker %s will download %s", num, rows)
     for row in rows:
-        for elem in row:
-            download_site(download_dir, import_sheet, database, elem, engine)
+        url = row[0]
+        folder = row[1]
+        logging.debug("url = %s, folder = %s", url, folder)
+        download_site(download_dir, import_sheet,
+                      database, url, folder, engine)
 
 
 def archive_websites(download_dir, dataset, workers, engine):
