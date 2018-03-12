@@ -37,7 +37,7 @@ def excel_to_sqlite(excel_file, database, import_sheet, column_names):
     conn = sqlite3.connect(database)
     curs = conn.cursor()
     # Create table based on column_names
-    curs.execute('CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT)'.
+    curs.execute('CREATE TABLE {} (Id INTEGER PRIMARY KEY, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT, {} TEXT)'.
                  format(import_sheet, (*column_names)))
     # Import excel_file into database
     import_wb = openpyxl.load_workbook(excel_file)
@@ -54,7 +54,7 @@ def excel_to_sqlite(excel_file, database, import_sheet, column_names):
                               column_indices[index], index, cell.value)
                 to_db.append(cell.value)
         logging.debug(to_db)
-        curs.execute('INSERT INTO {} ({}, {}, {}, {}, {}, {}, {}) VALUES (?, ?, ?, ?, ?, ?, ?)'.
+        curs.execute('INSERT INTO {} ({}, {}, {}, {}, {}, {}, {}, {}) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'.
                      format(import_sheet, (*column_names)), to_db)
         logging.info("Inserted values into SQLite.")
         # Delete empty rows

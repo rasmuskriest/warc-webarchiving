@@ -33,7 +33,7 @@ def check_time():
         return False
 
 
-def write_state(database, url, folder, import_sheet, download_dir):
+def write_state(database, url, folder, import_sheet, download_dir, diff_time):
     """Write new state in respecting column of the database."""
     conn = sqlite3.connect(database)
     writecurs = conn.cursor()
@@ -45,8 +45,8 @@ def write_state(database, url, folder, import_sheet, download_dir):
     logging.debug("WARC size: %s", size_warc)
     logging.debug("Log size: %s", size_log)
 
-    writecurs.execute('UPDATE {tn} SET {csw}=(?), {csl}=(?), {cl}=(?), {cs}=("done") WHERE {idf}=(?)'.
-                      format(tn=import_sheet, csw="SizeWarc", csl="SizeLog", cl="Last", cs="State", idf="Url"), (size_warc, size_log, date.today(), url))
+    writecurs.execute('UPDATE {tn} SET {csw}=(?), {csl}=(?), {cst}=(?), {cl}=(?), {cs}=("done") WHERE {idf}=(?)'.
+                      format(tn=import_sheet, csw="SizeWarc", csl="SizeLog", cst="DownloadDelta", cl="Last", cs="State", idf="Url"), (size_warc, size_log, diff_time, date.today(), url))
     logging.info("%s successfully marked as done in %s", url, import_sheet)
 
     conn.commit()
@@ -57,8 +57,9 @@ def download_site(download_dir, import_sheet, database, url, folder, engine):
     """Actually download the site with a subprocess."""
     logging.debug("Engine: %s", engine)
 
+    start_time = datetime.now()
     logging.info("Downloading %s with subprocess.run() at %s with %s",
-                 url, datetime.now(), engine)
+                 url, start_time, engine)
 
     if engine == 'wget':
         subprocess.run(['./wget.sh', url, folder, download_dir], cwd='./wget')
@@ -67,9 +68,11 @@ def download_site(download_dir, import_sheet, database, url, folder, engine):
         subprocess.run(['./wpull.sh', url, folder,
                         download_dir], cwd='./wpull')
 
+    end_time = datetime.now()
+    diff_time = str(end_time - start_time)
     logging.info(
-        "%s successfully downloaded with subprocess.run() at %s", url, datetime.now())
-    write_state(database, url, folder, import_sheet, download_dir)
+        "%s successfully downloaded with subprocess.run() at %s, that took %s", url, end_time, diff_time)
+    write_state(database, url, folder, import_sheet, download_dir, diff_time)
 
 
 def work_sqlite(num, database, import_sheet, download_dir, column_names, workers, engine):

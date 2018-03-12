@@ -74,7 +74,7 @@ def cli():
     dataset['import_sheet'] = 'import'
     dataset['export_sheet'] = 'export'
     dataset['column_names'] = ['Organization', 'Url',
-                               'Folder', 'SizeWarc', 'SizeLog', 'Last', 'State']
+                               'Folder', 'SizeWarc', 'SizeLog', 'DownloadDelta', 'Last', 'State']
 
     # Enable loglevel parsing.
     logging.basicConfig(level=args.loglevel,
