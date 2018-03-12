@@ -33,21 +33,21 @@ def check_time():
         return False
 
 
-def write_state(database, elem, import_sheet, download_dir):
+def write_state(database, url, folder, import_sheet, download_dir):
     """Write new state in respecting column of the database."""
     conn = sqlite3.connect(database)
     writecurs = conn.cursor()
 
     size_warc = float(getsize(download_dir + '/' +
-                              elem + '.warc.gz') / float(1 << 20))
+                              folder + '.warc.gz') / float(1 << 20))
     size_log = float(getsize(download_dir + '/' +
-                             elem + '.log') / float(1 << 20))
+                             folder + '.log') / float(1 << 20))
     logging.debug("WARC size: %s", size_warc)
     logging.debug("Log size: %s", size_log)
 
     writecurs.execute('UPDATE {tn} SET {csw}=(?), {csl}=(?), {cl}=(?), {cs}=("done") WHERE {idf}=(?)'.
-                      format(tn=import_sheet, csw="SizeWarc", csl="SizeLog", cl="Last", cs="State", idf="Url"), (size_warc, size_log, date.today(), elem))
-    logging.info("%s successfully marked as done in %s", elem, import_sheet)
+                      format(tn=import_sheet, csw="SizeWarc", csl="SizeLog", cl="Last", cs="State", idf="Url"), (size_warc, size_log, date.today(), url))
+    logging.info("%s successfully marked as done in %s", url, import_sheet)
 
     conn.commit()
     conn.close()
@@ -69,7 +69,7 @@ def download_site(download_dir, import_sheet, database, url, folder, engine):
 
     logging.info(
         "%s successfully downloaded with subprocess.run() at %s", url, datetime.now())
-    write_state(database, url, import_sheet, download_dir)
+    write_state(database, url, folder, import_sheet, download_dir)
 
 
 def work_sqlite(num, database, import_sheet, download_dir, column_names, workers, engine):
