@@ -16,7 +16,7 @@ def cli():
 
     # Add argument parser. Possible commands can be shown with -h parameter.
     parser = argparse.ArgumentParser(
-        prog='wget-warc',
+        prog='warc-webarchiving',
         description='Script to automate webarchiving with wget.'
     )
 
