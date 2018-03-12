@@ -65,19 +65,22 @@ def excel_to_sqlite(excel_file, database, import_sheet, column_names):
     conn.close()
 
 
-def import_excel(excel_file, db_name, db_path, database, import_sheet, column_names):
+def import_excel(dataset):
     """Import CSV file to SQLite database."""
-    sqlite_exists = check_sqlite(database)
+    sqlite_exists = check_sqlite(dataset['database'])
 
     if sqlite_exists is True:
         # Move database first before creating a new one.
-        move_sqlite(db_name, db_path, database)
+        move_sqlite(dataset['db_name'], dataset['db_path'],
+                    dataset['database'])
         logging.info("import_csv() moved the old database")
-        excel_to_sqlite(excel_file, database, import_sheet, column_names)
+        excel_to_sqlite(dataset['excel_file'], dataset['database'],
+                        dataset['import_sheet'], dataset['column_names'])
 
     if sqlite_exists is False:
         logging.info("import_csv() did not move the old database")
-        excel_to_sqlite(excel_file, database, import_sheet, column_names)
+        excel_to_sqlite(dataset['excel_file'], dataset['database'],
+                        dataset['import_sheet'], dataset['column_names'])
 
 
 def sqlite_to_excel(excel_file, database, export_sheet, column_names):
@@ -96,12 +99,13 @@ def sqlite_to_excel(excel_file, database, export_sheet, column_names):
     import_wb.save(excel_file)
 
 
-def export_excel(excel_file, database, export_sheet, column_names):
+def export_excel(dataset):
     """Export SQLite database to CSV file."""
-    sqlite_exists = check_sqlite(database)
+    sqlite_exists = check_sqlite(dataset['database'])
 
     if sqlite_exists is True:
-        sqlite_to_excel(excel_file, database, export_sheet, column_names)
+        sqlite_to_excel(dataset['excel_file'], dataset['database'],
+                        dataset['export_sheet'], dataset['column_names'])
 
     if sqlite_exists is False:
         print("No database to export from.")

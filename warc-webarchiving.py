@@ -48,30 +48,40 @@ def cli():
         help='enable debug mode and get debug info'
     )
 
+    # Create dictionary 'dataset'
+    dataset = dict()
+
     # Parse arguments.
     args = parser.parse_args()
+
     # Read config file, default.conf is set as default in parser.
     conf = ConfigParser()
     conf.read(args.config)
+
+    # Set download_dir and worker number from config.
     download_dir = str(path.abspath(conf['Settings']['downloaddir']))
-    excel_file = str(conf['Settings']['excelfile'])
-    # Set db_name and database based on excel_file.
-    db_name = str(path.splitext(path.basename(excel_file))[0])
-    db_path = str(path.split(excel_file)[0] + '/')
-    database = (db_path + db_name + '.sqlite')
-    # Set worker number
     workers = int(conf['Settings']['workers'])
+
+    dataset['excel_file'] = str(conf['Settings']['excelfile'])
+
+    # Set db_name and database based on excel_file.
+    dataset['db_name'] = str(path.splitext(
+        path.basename(dataset['excel_file']))[0])
+    dataset['db_path'] = str(path.split(dataset['excel_file'])[0] + '/')
+    dataset['database'] = (dataset['db_path'] + dataset['db_name'] + '.sqlite')
+
     # Set sheets for import / export and columns.
-    import_sheet = 'import'
-    export_sheet = 'export'
-    column_names = ['Organization', 'Url',
-                    'SizeWarc', 'SizeLog', 'Last', 'State']
+    dataset['import_sheet'] = 'import'
+    dataset['export_sheet'] = 'export'
+    dataset['column_names'] = ['Organization', 'Url',
+                               'SizeWarc', 'SizeLog', 'Last', 'State']
+
     # Enable loglevel parsing.
     logging.basicConfig(level=args.loglevel,
                         format="%(asctime)s [%(levelname)-5.5s]  %(message)s",
                         handlers=[
                             logging.FileHandler(
-                                "{0}/{1}.log".format(db_path, db_name)),
+                                "{0}/{1}.log".format(dataset['db_path'], dataset['db_name'])),
                             logging.StreamHandler()
                         ]
                         )
@@ -83,9 +93,7 @@ def cli():
         try:
             archivesites.archive_websites(
                 download_dir,
-                database,
-                import_sheet,
-                column_names,
+                dataset,
                 workers,
                 engine
             )
@@ -94,22 +102,14 @@ def cli():
     elif args.mode == 'import':
         try:
             managesqlite.import_excel(
-                excel_file,
-                db_name,
-                db_path,
-                database,
-                import_sheet,
-                column_names
+                dataset
             )
         except Exception as exc:
             print(str(exc))
     elif args.mode == 'export':
         try:
             managesqlite.export_excel(
-                excel_file,
-                database,
-                export_sheet,
-                column_names
+                dataset
             )
         except Exception as exc:
             print(str(exc))

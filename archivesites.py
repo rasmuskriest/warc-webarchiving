@@ -85,9 +85,9 @@ def work_sqlite(num, database, import_sheet, download_dir, column_names, workers
             download_site(download_dir, import_sheet, database, elem)
 
 
-def archive_websites(download_dir, database, import_sheet, column_names, workers):
+def archive_websites(download_dir, dataset, workers, engine):
     """Archive websites from a csv"""
-    sqlite_exists = managesqlite.check_sqlite(database)
+    sqlite_exists = managesqlite.check_sqlite(dataset['database'])
     download_time = check_time()
 
     if sqlite_exists:
@@ -102,7 +102,7 @@ def archive_websites(download_dir, database, import_sheet, column_names, workers
             # Define number of workers
             for num in range(workers):
                 p = multiprocessing.Process(target=work_sqlite, args=(
-                    num, database, import_sheet, download_dir, column_names, workers))
+                    num, dataset['database'], dataset['import_sheet'], download_dir, dataset['column_names'], workers))
                 jobs.append(p)
                 p.start()
 
