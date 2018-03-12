@@ -1,3 +1,5 @@
+#!/bin/sh
+
 url=$1
 dir=$2
 
