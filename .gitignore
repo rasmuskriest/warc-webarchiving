@@ -9,6 +9,8 @@ pyvenv.cfg
 .Python
 .DS_Store
 *.pyc
+.vscode/*
+!launch.json
 
 *.log
 *.db
