@@ -57,9 +57,21 @@ def excel_to_sqlite(excel_file, database, import_sheet, column_names):
         curs.execute('INSERT INTO {} ({}, {}, {}, {}, {}, {}, {}) VALUES (?, ?, ?, ?, ?, ?, ?)'.
                      format(import_sheet, (*column_names)), to_db)
         logging.info("Inserted values into SQLite.")
+        # Delete empty rows
         curs.execute('DELETE FROM {} WHERE {coi} IS NULL'.format(
             import_sheet, coi="Url"))
         logging.info("Deleted empty rows.")
+        # Add missing entries in folder column
+        curs.execute('UPDATE {} SET {coj} = {coi} WHERE {coj} IS NULL'.format(
+            import_sheet, coi="Url", coj="Folder"))
+        logging.info("Added missing entries in folder column.")
+        # Fix bad entries in folder column (removing all / ~)
+        bad_signs = ['https://', 'http://', '/', '\\', '~']
+        for sign in bad_signs:
+            curs.execute('UPDATE {} SET {coj} = REPLACE({coj}, "{si}", "")'.format(
+                import_sheet, coj="Folder", si=sign))
+            logging.debug("Removed character '%s' from folder column", sign)
+        logging.info("Fixed bad entries in folder column.")
 
     conn.commit()
     conn.close()
