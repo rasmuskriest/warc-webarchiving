@@ -23,12 +23,18 @@ def cli():
     parser.add_argument(
         'mode',
         choices=['run', 'import', 'export'],
-        help='run wget-warc or work with database'
+        help='run warc-webarchiving or work with database'
+    )
+    parser.add_argument(
+        '--engine',
+        choices=['wget', 'wpull'],
+        help='choose engine for archving (default: wget)',
+        default='wget'
     )
     parser.add_argument(
         '-c', '--config',
         metavar="FILE",
-        help='custom path to user config file',
+        help='custom path to user config file (default: ./config/default.conf)',
         default=(getcwd(), 'config/default.conf')
     )
     parser.add_argument(
