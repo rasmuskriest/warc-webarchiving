@@ -53,17 +53,25 @@ def write_state(database, elem, import_sheet, download_dir):
     conn.close()
 
 
-def download_site(download_dir, import_sheet, database, elem):
+def download_site(download_dir, import_sheet, database, elem, engine):
     """Actually download the site with a subprocess."""
-    logging.info("Downloading %s with subprocess.run() at %s",
-                 elem, datetime.now())
-    subprocess.run(['./wget.sh', elem, download_dir], cwd='./wget')
+    logging.debug("Engine: %s", engine)
+
+    logging.info("Downloading %s with subprocess.run() at %s with %s",
+                 elem, datetime.now(), engine)
+
+    if engine == 'wget':
+        subprocess.run(['./wget.sh', elem, download_dir], cwd='./wget')
+
+    if engine == 'wpull':
+        subprocess.run(['./wpull.sh', elem, download_dir], cwd='./wpull')
+
     logging.info(
         "%s successfully downloaded with subprocess.run() at %s", elem, datetime.now())
     write_state(database, elem, import_sheet, download_dir)
 
 
-def work_sqlite(num, database, import_sheet, download_dir, column_names, workers):
+def work_sqlite(num, database, import_sheet, download_dir, column_names, workers, engine):
     """Work in SQLite database to find URLs to download."""
     logging.info("Worker %s of %s", num, int(workers - 1))
     conn = sqlite3.connect(database)
@@ -82,7 +90,7 @@ def work_sqlite(num, database, import_sheet, download_dir, column_names, workers
     logging.info("Worker %s will download %s", num, rows)
     for row in rows:
         for elem in row:
-            download_site(download_dir, import_sheet, database, elem)
+            download_site(download_dir, import_sheet, database, elem, engine)
 
 
 def archive_websites(download_dir, dataset, workers, engine):
@@ -102,7 +110,7 @@ def archive_websites(download_dir, dataset, workers, engine):
             # Define number of workers
             for num in range(workers):
                 p = multiprocessing.Process(target=work_sqlite, args=(
-                    num, dataset['database'], dataset['import_sheet'], download_dir, dataset['column_names'], workers))
+                    num, dataset['database'], dataset['import_sheet'], download_dir, dataset['column_names'], workers, engine))
                 jobs.append(p)
                 p.start()
 
