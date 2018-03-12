@@ -75,6 +75,8 @@ def cli():
                             logging.StreamHandler()
                         ]
                         )
+    # Set engine to use for archiving / download
+    engine = args.engine
 
     # Parse arguments and run accordingly.
     if args.mode == 'run':
@@ -84,7 +86,8 @@ def cli():
                 database,
                 import_sheet,
                 column_names,
-                workers
+                workers,
+                engine
             )
         except Exception as exc:
             print(str(exc))
