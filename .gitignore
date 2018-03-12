@@ -11,6 +11,9 @@ pyvenv.cfg
 *.pyc
 .vscode/*
 !launch.json
+wget/*
+wpull/*
+!.sh
 
 *.log
 *.db
