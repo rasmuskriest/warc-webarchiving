@@ -1,46 +1,49 @@
-Skripte zur automatisierten Webarchivierung mithilfe von `wget`.
+Skripte zur automatisierten Webarchivierung mithilfe von `wget` oder `wpull`.
 
-Zur Erläuterung der verschiedenen Argumente ist das [GNU Wget Manual](https://www.gnu.org/software/wget/manual/wget.html) heranzuziehen.
+Zur Erläuterung der verschiedenen Argumente ist das [GNU Wget Manual](https://www.gnu.org/software/wget/manual/wget.html) oder das [GitHub-Repository von `wpull`](https://github.com/chfoo/wpull) heranzuziehen.
 
 ## Nutzung
 
-Die automatisierte Webarchivierung kann mit dem Parameter `run` angestoßen werden. Hierbei werden als Verzeichnis für den Download das in der `default.conf` genannte `downloaddir` und als Liste das `csvfile` verwendet:
+Die automatisierte Webarchivierung kann mit dem Parameter `run` angestoßen werden. Hierbei werden als Verzeichnis für den Download das in der `default.conf` genannte `downloaddir` verwendet:
 
 ```
-python wget-warc.py run
+python warc-webarchiving.py run
 ```
 
-Für einen manuellen Im- oder Export zwischen CSV-Liste und SQLite-Datenbank
+Zuvor muss allerdings eine Excel-Datei (in der `default.conf` per `excelfile` definiert) importiert werden. Auch der Export ist möglich:
 
 ```
-python wget-warc.py import
-python wget-warc.py export
+python warc-webarchiving.py import
+python warc-webarchiving.py export
 ```
 
 Der Befehl `-h` zeigt alle Optionen auf:
 
 ```
-usage: wget-warc [-h] [-c] [-v] {run,import,export}
+usage: warc-webarchiving [-h] [--engine {wget,wpull}] [-c FILE] [-v] [-d]
+                         {run,import,export}
 
-Scripts to automate webarchiving with wget.
+Script to automate webarchiving with wget.
 
 positional arguments:
-  {run,import,export}  run wget-warc or work with database.
+  {run,import,export}   run warc-webarchiving or work with database
 
 optional arguments:
-  -h, --help           show this help message and exit
-  -c, --config         custom path to user config file
-  -v, --verbose        enable verbose mode and get verbose info
+  -h, --help            show this help message and exit
+  --engine {wget,wpull}
+                        choose engine for archving (default: wget)
+  -c FILE, --config FILE
+                        custom path to user config file (default:
+                        ./config/default.conf)
+  -v, --verbose         enable verbose mode and get verbose info
+  -d, --debug           enable debug mode and get debug info
 ```
 
 ## Voraussetzungen
 
-`wget-warc` funktioniert nur mit einer `venv` innerhalb von _Python 3_ (aktuell mind. 3.5); die benötigten externen Module lassen sich mit dem Befehl `pip install -r requirements.txt` installieren.
+`warc-webarchiving` funktioniert nur mit einer `venv` innerhalb von _Python 3_ (aktuell mind. 3.5); die benötigten externen Module lassen sich mit dem Befehl `pip install -r requirements.txt` installieren.
 
 ## To-Do / Missings
 
-* Webseiten, deren URL entweder kyrillische Buchstaben aufweist oder `/` enthält, lassen sich derzeit nicht herunterladen. Sie sollten daher vor dem Import ausgeschlossen werden.
-* Der Umgang mit Fehlermeldungen fehlt (fast) vollständig. Daher wird `State == done`, obwohl der Download fehlschlägt.
-* Der Export von der SQLite in eine CSV-Datei ist noch nicht implementiert.
-* Die Funktion `check_time()` wird zwar aufgerufen, hat allerdings keine Auswirkungen.
-* Die Namen der Überschriften aus dem CSV-Datensatz sind aktuell hardcoded.
+* Der Umgang mit Fehlermeldungen fehlt (fast) vollständig.
+* Die Namen der Überschriften aus der Excel-Tabelle sind aktuell hardcoded.
