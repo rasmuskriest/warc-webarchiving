@@ -1,5 +1,6 @@
 wheel==0.30.0
 openpyxl==2.4.8
 psutil==5.4.3
-html5lib==0.9999
+html5lib==0.9999999
+tornado>=3.2.2,<4.9
 wpull==2.0.1
