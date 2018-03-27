@@ -1,23 +1,12 @@
-Skripte zur automatisierten Webarchivierung mithilfe von `wget` oder `wpull`.
+Python script to automate webarchiving with `wget` or `wpull`.
 
-Zur Erläuterung der verschiedenen Argumente ist das [GNU Wget Manual](https://www.gnu.org/software/wget/manual/wget.html) oder das [GitHub-Repository von `wpull`](https://github.com/chfoo/wpull) heranzuziehen.
+## Installation
 
-## Nutzung
+Clone the repository, create a virtual enviroment (currently Python 3.5+), do `pip install -r requirements.txt`.
 
-Die automatisierte Webarchivierung kann mit dem Parameter `run` angestoßen werden. Hierbei werden als Verzeichnis für den Download das in der `default.conf` genannte `downloaddir` verwendet:
+## Usage
 
-```
-python warc-webarchiving.py run
-```
-
-Zuvor muss allerdings eine Excel-Datei (in der `default.conf` per `excelfile` definiert) importiert werden. Auch der Export ist möglich:
-
-```
-python warc-webarchiving.py import
-python warc-webarchiving.py export
-```
-
-Der Befehl `-h` zeigt alle Optionen auf:
+`warc-webarchiving.py` is the main script, `config\default.conf` the default configuration file, `config\example.xlsx` the default table.
 
 ```
 usage: warc-webarchiving [-h] [--engine {wget,wpull}] [-c FILE] [-v] [-d]
@@ -39,11 +28,17 @@ optional arguments:
   -d, --debug           enable debug mode and get debug info
 ```
 
-## Voraussetzungen
+### Example
 
-`warc-webarchiving` funktioniert nur mit einer `venv` innerhalb von _Python 3_ (aktuell mind. 3.5); die benötigten externen Module lassen sich mit dem Befehl `pip install -r requirements.txt` installieren.
+In this example, the table `example.xlsx` (referred to in `default.conf`) is being imported and a download with the default engine (`wpull`) is started. Afterwards, the SQLite database is written into another sheet inside `example.xlsx`.
 
-## To-Do / Missings
+```
+python warc-webarchiving.py import
+python warc-webarchiving.py run
+python warc-webarchiving.py export
+```
 
-* Der Umgang mit Fehlermeldungen fehlt (fast) vollständig.
-* Die Namen der Überschriften aus der Excel-Tabelle sind aktuell hardcoded.
+## License
+
+Copyright (c) 2018 Rasmus Kriest
+The code in this project is licensed under MIT license.
