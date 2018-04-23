@@ -72,6 +72,16 @@ def excel_to_sqlite(excel_file, database, import_sheet, column_names):
                 import_sheet, coj="Folder", si=sign))
             logging.debug("Removed character '%s' from folder column", sign)
         logging.info("Fixed bad entries in folder column.")
+        # Fix bad entries in url column (removing all / ~)
+        url_signs = ['https://', 'http://']
+        for sign in url_signs:
+            curs.execute('UPDATE {} SET {coj} = REPLACE({coj}, "{si}", "")'.format(
+                import_sheet, coj="Url", si=sign))
+            logging.debug("Removed character '%s' from url column", sign)
+        # Trailing / cannot be removed with previous function
+        curs.execute('UPDATE {} SET {coj} = REPLACE({coj}, {coj}, rtrim({coj}, "/")) WHERE substr({coj}, -1, 1) LIKE "/"'.format(import_sheet, coj="Url"))
+        logging.debug("Removed trailing / from url column")
+        logging.info("Fixed bad entries in url column.")
 
     conn.commit()
     conn.close()
