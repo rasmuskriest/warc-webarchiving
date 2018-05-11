@@ -11,7 +11,9 @@ wget $url \
     --mirror \
     --warc-file="$dir/$folder" \
     --warc-cdx \
+    --no-parent \
     --page-requisites \
+    --adjust-extension \
     --html-extension \
     --convert-links \
     --execute robots=off \
@@ -21,4 +23,5 @@ wget $url \
     --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36"\
     --wait=1 \
     --random-wait \
-    --append-output="$dir/$folder".log
+    --append-output="$dir/$folder".log \
+    --restrict-file-names=nocontrol

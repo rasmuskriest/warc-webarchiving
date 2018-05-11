@@ -22,4 +22,5 @@ wpull $url \
     --timeout 60 --session-timeout 21600 \
     --delete-after --database $url.db \
     --quiet \
-    --output-file "$dir/$folder".log
+    --output-file "$dir/$folder".log \
+    --restrict-file-names=nocontrol
