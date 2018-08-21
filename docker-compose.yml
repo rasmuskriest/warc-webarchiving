@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  import:
+    build:
+      context: .
+      dockerfile: Dockerfile_import
+    volumes:
+      - ./config:/usr/src/app/config
+    environment:
+      - CONF=${CONFIG_FILE}
+  download:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - import
+    volumes:
+      - ${DOWNLOAD_VOLUME}:/usr/src/app/WARC
+      - ./config:/usr/src/app/config
+    environment:
+      - CONF=${CONFIG_FILE}
+      - ENGINE=${ENGINE}
