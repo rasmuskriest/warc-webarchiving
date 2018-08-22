@@ -40,7 +40,7 @@ python warc-webarchiving.py export
 
 ## Usage with Docker
 
-This project can be run indepently of local Python versions by using [_Docker_](https://www.docker.com/) and [\_Docker Compose](https://docs.docker.com/compose/). Both `import` and `run` are executed when started with `docker-compose up --build`.
+This project can be run indepently of local Python versions by using [_Docker_](https://www.docker.com/) and [_Docker Compose_](https://docs.docker.com/compose/). Both `import` and `run` are executed when started with `docker-compose up --build`.
 
 **Configuration is a bit patchy when using _Docker_ as of now.** Inside the respective `.conf`, both `downloaddir = ./WARC` as well as `excelfile = ./config/` must not be changed - the specific _Excel_ file has to be named though. Instead, most configuration is handled by _Docker's_ `.env` file: `DOWNLOAD_VOLUME` is mapped into `downloaddir` inside the `.conf`. Also, the arguments `--config` and `--engine` are handled by _Docker_.
 
