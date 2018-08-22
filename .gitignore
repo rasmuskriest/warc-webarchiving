@@ -24,6 +24,8 @@ www*/
 
 *.xlsx
 !example.xlsx
+!docker_example.xlsx
 *.sqlite
 *.conf
 !default.conf
+!docker_default.conf
