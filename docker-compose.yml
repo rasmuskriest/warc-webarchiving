@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile_import
     volumes:
-      - ./config:/usr/src/app/config
+      - ./config_docker:/usr/src/app/config
     environment:
       - CONF=${CONFIG_FILE}
   download:
@@ -17,7 +17,7 @@ services:
       - import
     volumes:
       - ${DOWNLOAD_VOLUME}:/usr/src/app/WARC
-      - ./config:/usr/src/app/config
+      - ./config_docker:/usr/src/app/config
     environment:
       - CONF=${CONFIG_FILE}
       - ENGINE=${ENGINE}
