@@ -53,20 +53,38 @@ def write_state(database, url, folder, import_sheet, download_dir, diff_time):
     conn.close()
 
 
-def download_site(download_dir, import_sheet, database, url, folder, engine):
+def download_site(download_dir, import_sheet, database, url, folder, engine, default_engine):
     """Actually download the site with a subprocess."""
-    logging.debug("Engine: %s", engine)
 
-    start_time = datetime.now()
-    logging.info("Downloading %s with subprocess.run() at %s with %s",
-                 url, start_time, engine)
+    if engine != None:
+        logging.debug("Using engine: %s", engine)
 
-    if engine == 'wget':
-        subprocess.run(['./wget.sh', url, folder, download_dir], cwd='./wget')
+        start_time = datetime.now()
+        logging.info("Downloading %s with subprocess.run() at %s with %s",
+                     url, start_time, engine)
 
-    if engine == 'wpull':
-        subprocess.run(['./wpull.sh', url, folder,
-                        download_dir], cwd='./wpull')
+        if engine == 'wget':
+            subprocess.run(['./wget.sh', url, folder,
+                            download_dir], cwd='./wget')
+
+        if engine == 'wpull':
+            subprocess.run(['./wpull.sh', url, folder,
+                            download_dir], cwd='./wpull')
+
+    else:
+        logging.debug("Using default engine: %s", default_engine)
+
+        start_time = datetime.now()
+        logging.info("Downloading %s with subprocess.run() at %s with %s",
+                     url, start_time, default_engine)
+
+        if default_engine == 'wget':
+            subprocess.run(['./wget.sh', url, folder,
+                            download_dir], cwd='./wget')
+
+        if default_engine == 'wpull':
+            subprocess.run(['./wpull.sh', url, folder,
+                            download_dir], cwd='./wpull')
 
     end_time = datetime.now()
     diff_time = str(end_time - start_time)
@@ -75,14 +93,14 @@ def download_site(download_dir, import_sheet, database, url, folder, engine):
     write_state(database, url, folder, import_sheet, download_dir, diff_time)
 
 
-def work_sqlite(num, database, import_sheet, download_dir, column_names, workers, engine):
+def work_sqlite(num, database, import_sheet, download_dir, column_names, workers, default_engine):
     """Work in SQLite database to find URLs to download."""
     logging.info("Worker %s of %s", num, int(workers - 1))
     conn = sqlite3.connect(database)
     readcurs = conn.cursor()
     # Select URL in rows that are not done
-    readcurs.execute('SELECT ({coi}), ({coj}) FROM {tn} WHERE {cn} IS NULL'.
-                     format(coi="Url", coj="Folder", tn=import_sheet, cn="State"))
+    readcurs.execute('SELECT ({coi}), ({coj}), ({cok}) FROM {tn} WHERE {cn} IS NULL'.
+                     format(coi="Url", coj="Folder", cok="Engine", tn=import_sheet, cn="State"))
 
     sites = readcurs.fetchall()
     logging.debug(sites)
@@ -96,12 +114,14 @@ def work_sqlite(num, database, import_sheet, download_dir, column_names, workers
     for row in rows:
         url = row[0]
         folder = row[1]
-        logging.debug("url = %s, folder = %s", url, folder)
+        engine = row[2]
+        logging.debug("url = %s, folder = %s, engine = %s",
+                      url, folder, engine)
         download_site(download_dir, import_sheet,
-                      database, url, folder, engine)
+                      database, url, folder, engine, default_engine)
 
 
-def archive_websites(download_dir, dataset, workers, engine):
+def archive_websites(download_dir, dataset, workers, default_engine):
     """Archive websites from a csv"""
     sqlite_exists = managesqlite.check_sqlite(dataset['database'])
     download_time = check_time()
@@ -118,7 +138,7 @@ def archive_websites(download_dir, dataset, workers, engine):
             # Define number of workers
             for num in range(workers):
                 p = multiprocessing.Process(target=work_sqlite, args=(
-                    num, dataset['database'], dataset['import_sheet'], download_dir, dataset['column_names'], workers, engine))
+                    num, dataset['database'], dataset['import_sheet'], download_dir, dataset['column_names'], workers, default_engine))
                 jobs.append(p)
                 p.start()
 

@@ -28,7 +28,7 @@ def cli():
     parser.add_argument(
         '--engine',
         choices=['wget', 'wpull'],
-        help='choose engine for archving (default: wget)',
+        help='choose engine for archving (default: wget); overridden by database',
         default='wget'
     )
     parser.add_argument(
@@ -74,7 +74,7 @@ def cli():
     dataset['import_sheet'] = 'import'
     dataset['export_sheet'] = 'export'
     dataset['column_names'] = ['Organization', 'Url',
-                               'Folder', 'SizeWarc', 'SizeLog', 'DownloadDelta', 'Last', 'State']
+                               'Folder', 'Engine', 'SizeWarc', 'SizeLog', 'DownloadDelta', 'Last', 'State']
 
     # Enable loglevel parsing.
     logging.basicConfig(level=args.loglevel,
@@ -85,8 +85,8 @@ def cli():
                             logging.StreamHandler()
                         ]
                         )
-    # Set engine to use for archiving / download
-    engine = args.engine
+    # Set default engine to use for archiving / download
+    default_engine = args.engine
 
     # Parse arguments and run accordingly.
     if args.mode == 'run':
@@ -95,7 +95,7 @@ def cli():
                 download_dir,
                 dataset,
                 workers,
-                engine
+                default_engine
             )
         except Exception as exc:
             print(str(exc))
