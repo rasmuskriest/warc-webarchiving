@@ -14,7 +14,7 @@ httrack $url \
     --assume php3=text/html,php=text/html,php4=text/html,php2=text/html,cgi=text/html,asp=text/html,jsp=text/html,pl=text/html,cfm=text/html \
     -ad.doubleclick.net/* -mime:application/foobar \
     +*.png +*.gif +*.jpg +*.jpeg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar +mime:text/html +mime:image/*
-    --user-agent "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36" \
+    -F "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36" \
     -d \
     --search-index \
     -s2 \
