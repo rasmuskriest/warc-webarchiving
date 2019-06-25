@@ -11,7 +11,7 @@ To use the [_HTTrack_ engine](http://www.httrack.com), the respective package ne
 `warc-webarchiving.py` is the main script, `config\default.conf` the default configuration file, `config\example.xlsx` the default table.
 
 ```
-usage: warc-webarchiving [-h] [--engine {wget,wpull}] [-c FILE] [-v] [-d]
+usage: warc-webarchiving [-h] [--engine {httrack,wget,wpull}] [-c FILE] [-v] [-d]
                          {run,import,export}
 
 Script to automate webarchiving with wget.
