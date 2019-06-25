@@ -62,6 +62,7 @@ def download_site(download_dir, import_sheet, database, url, folder, engine, def
         start_time = datetime.now()
         logging.info("Downloading %s with subprocess.run() at %s with %s",
                      url, start_time, engine)
+
         if engine == 'httrack':
             subprocess.run(['./httrack.sh', url, folder,
                             download_dir], cwd='./httrack')
@@ -100,7 +101,7 @@ def download_site(download_dir, import_sheet, database, url, folder, engine, def
 
     # If httrack is being used as engine, an automatic conversion to WARC is tried. It will fail in case Java is not installed on the machine.
     if engine == 'httrack':
-        logging.ingo("Converting %s to WARC", url)
+        logging.info("Converting %s to WARC", url)
         subprocess.run(['./convert2warc.sh', folder,
                         download_dir], cwd='./httrack')
         logging.info("%s successfully converted", url)
