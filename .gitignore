@@ -29,3 +29,5 @@ www*/
 *.conf
 !default.conf
 !docker_default.conf
+
+*.jar
