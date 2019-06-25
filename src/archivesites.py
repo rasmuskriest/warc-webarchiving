@@ -62,6 +62,9 @@ def download_site(download_dir, import_sheet, database, url, folder, engine, def
         start_time = datetime.now()
         logging.info("Downloading %s with subprocess.run() at %s with %s",
                      url, start_time, engine)
+        if engine == 'httrack':
+            subprocess.run(['./httrack.sh', url, folder,
+                            download_dir], cwd='./httrack')
 
         if engine == 'wget':
             subprocess.run(['./wget.sh', url, folder,
@@ -78,6 +81,10 @@ def download_site(download_dir, import_sheet, database, url, folder, engine, def
         logging.info("Downloading %s with subprocess.run() at %s with %s",
                      url, start_time, default_engine)
 
+        if default_engine == 'httrack':
+            subprocess.run(['./httrack.sh', url, folder,
+                            download_dir], cwd='./httrack')
+
         if default_engine == 'wget':
             subprocess.run(['./wget.sh', url, folder,
                             download_dir], cwd='./wget')
@@ -90,7 +97,16 @@ def download_site(download_dir, import_sheet, database, url, folder, engine, def
     diff_time = str(end_time - start_time)
     logging.info(
         "%s successfully downloaded with subprocess.run() at %s, that took %s", url, end_time, diff_time)
-    write_state(database, url, folder, import_sheet, download_dir, diff_time)
+
+    # If httrack is being used as engine, an automatic conversion to WARC is tried. It will fail in case Java is not installed on the machine.
+    if engine == 'httrack':
+        logging.ingo("Converting %s to WARC", url)
+        subprocess.run(['./convert2warc.sh', folder,
+                        download_dir], cwd='./httrack')
+        logging.info("%s successfully converted", url)
+
+    write_state(database, url, folder, import_sheet,
+                download_dir, diff_time)
 
 
 def work_sqlite(num, database, import_sheet, download_dir, column_names, workers, default_engine):

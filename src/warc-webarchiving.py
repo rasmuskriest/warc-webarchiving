@@ -27,7 +27,7 @@ def cli():
     )
     parser.add_argument(
         '--engine',
-        choices=['wget', 'wpull'],
+        choices=['httrack', 'wget', 'wpull'],
         help='choose engine for archving (default: wget); overridden by database',
         default='wget'
     )

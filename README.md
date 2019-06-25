@@ -4,6 +4,8 @@ Python script to automate webarchiving with `wget` or `wpull`.
 
 Clone the repository, create a virtual enviroment (currently Python 3.5+), do `pip install -r requirements.txt`.
 
+To use the [_HTTrack_ engine](http://www.httrack.com), the respective package needs to be installed. Many distributions have it in their official repositories, e.g. [_Debian_](https://packages.debian.org/search?keywords=httrack) (`apt-get install httrack`). The application will try to convert the downloaded file to WARC automatically, although this process will fail in case _Java_ is not instelled on the machine.
+
 ## Usage
 
 `warc-webarchiving.py` is the main script, `config\default.conf` the default configuration file, `config\example.xlsx` the default table.
@@ -19,8 +21,9 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --engine {wget,wpull}
-                        choose engine for archving (default: wget)
+  --engine {httrack,wget,wpull}
+                        choose engine for archving (default: wget); overridden
+                        by database
   -c FILE, --config FILE
                         custom path to user config file (default:
                         ./config/default.conf)
@@ -30,7 +33,7 @@ optional arguments:
 
 ### Example
 
-In this example, the table `example.xlsx` (referred to in `default.conf`) is being imported and a download with the default engine (`wpull`) is started. Afterwards, the SQLite database is written into another sheet inside `example.xlsx`.
+In this example, the table `example.xlsx` (referred to in `default.conf`) is being imported and a download with the default engine (`wget`) is started. Afterwards, the SQLite database is written into another sheet inside `example.xlsx`.
 
 ```
 python warc-webarchiving.py import
@@ -46,5 +49,5 @@ This project can be run indepently of local Python versions by using [_Docker_](
 
 ## License
 
-Copyright (c) 2018 Rasmus Kriest
+Copyright (c) 2019 Rasmus Kriest
 The code in this project is licensed under MIT license.
