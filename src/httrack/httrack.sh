@@ -10,7 +10,7 @@ httrack $url \
     --mirrorlinks \
     --quiet \
     --debug-headers \
-    -O "$dir/$folder" \
+    -O "$dir/$folder/httrack" \
     --assume php3=text/html,php=text/html,php4=text/html,php2=text/html,cgi=text/html,asp=text/html,jsp=text/html,pl=text/html,cfm=text/html \
     -ad.doubleclick.net/* -mime:application/foobar \
     +*.png +*.gif +*.jpg +*.jpeg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar +mime:text/html +mime:image/* \
