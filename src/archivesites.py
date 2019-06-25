@@ -6,9 +6,9 @@ from datetime import datetime, date, time
 import logging
 import multiprocessing
 from os.path import getsize
+from pathlib import Path
 import subprocess
 import sqlite3
-from pathlib import Path
 
 import managesqlite
 
@@ -39,8 +39,8 @@ def write_state(database, url, folder, import_sheet, download_dir, diff_time):
     conn = sqlite3.connect(database)
     writecurs = conn.cursor()
 
-    warcpath = (download_dir + '/' + folder + '.warc.gz')
-    logpath = (download_dir + '/' + folder + '.log')
+    warcpath = Path(download_dir + '/' + folder + '.warc.gz')
+    logpath = Path(download_dir + '/' + folder + '.log')
 
     if warcpath.is_file():
         size_warc = float(getsize(download_dir + '/' +
