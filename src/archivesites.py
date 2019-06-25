@@ -8,6 +8,7 @@ import multiprocessing
 from os.path import getsize
 import subprocess
 import sqlite3
+from pathlib import Path
 
 import managesqlite
 
@@ -38,12 +39,22 @@ def write_state(database, url, folder, import_sheet, download_dir, diff_time):
     conn = sqlite3.connect(database)
     writecurs = conn.cursor()
 
-    size_warc = float(getsize(download_dir + '/' +
-                              folder + '.warc.gz') / float(1 << 20))
-    size_log = float(getsize(download_dir + '/' +
-                             folder + '.log') / float(1 << 20))
-    logging.debug("WARC size: %s", size_warc)
-    logging.debug("Log size: %s", size_log)
+    warcpath = (download_dir + '/' + folder + '.warc.gz')
+    logpath = (download_dir + '/' + folder + '.log')
+
+    if warcpath.is_file():
+        size_warc = float(getsize(download_dir + '/' +
+                                  folder + '.warc.gz') / float(1 << 20))
+        logging.debug("WARC size: %s", size_warc)
+    else:
+        size_warc = 'NULL'
+
+    if logpath.is_file():
+        size_log = float(getsize(download_dir + '/' +
+                                 folder + '.log') / float(1 << 20))
+        logging.debug("Log size: %s", size_log)
+    else:
+        size_log = 'NULL'
 
     writecurs.execute('UPDATE {tn} SET {csw}=(?), {csl}=(?), {cst}=(?), {cl}=(?), {cs}=("done") WHERE {idf}=(?)'.
                       format(tn=import_sheet, csw="SizeWarc", csl="SizeLog", cst="DownloadDelta", cl="Last", cs="State", idf="Url"), (size_warc, size_log, diff_time, date.today(), url))
