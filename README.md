@@ -1,10 +1,10 @@
-Python script to automate webarchiving with `wget` or `wpull`.
+Python script to automate webarchiving with `wget`, `wpull` or `httrack`.
 
 ## Installation
 
 Clone the repository, create a virtual enviroment (currently Python 3.5+), do `pip install -r requirements.txt`.
 
-To use the [_HTTrack_ engine](http://www.httrack.com), the respective package needs to be installed. Many distributions have it in their official repositories, e.g. [_Debian_](https://packages.debian.org/search?keywords=httrack) (`apt-get install httrack`). The application will try to convert the downloaded file to WARC automatically, although this process will fail in case _Java_ is not instelled on the machine.
+To use the [_HTTrack_ engine](http://www.httrack.com), the respective package needs to be installed. Many distributions have it in their official repositories, e.g. [_Debian_](https://packages.debian.org/search?keywords=httrack) (`apt-get install httrack`). The application will try to convert the downloaded file to WARC automatically, although this process will fail in case _Java_ is not installed on the machine.
 
 ## Usage
 
@@ -30,6 +30,8 @@ optional arguments:
   -v, --verbose         enable verbose mode and get verbose info
   -d, --debug           enable debug mode and get debug info
 ```
+
+Please note that sites that are mirrored using the _HTTrack_ engine, are put in the subdirectory `./src/httrack` to match the behavior of the other two engines. In case the conversion using the NLA's [`httrack2warc`](https://github.com/nla/httrack2warc) fails (or is not to be used), the original files will nevertheless be only inside this directory.
 
 ### Example
 
